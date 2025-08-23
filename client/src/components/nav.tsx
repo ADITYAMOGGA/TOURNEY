@@ -64,7 +64,7 @@ export default function Nav() {
                     data-testid="button-user-menu"
                   >
                     <User className="w-4 h-4" />
-                    {user.user_metadata?.username || 'User'}
+                    {user.username || 'User'}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -121,7 +121,7 @@ export default function Nav() {
                     {user ? (
                       <>
                         <div className="px-3 py-2 text-sm text-gray-600">
-                          Welcome, {user.user_metadata?.username || 'User'}
+                          Welcome, {user.username || 'User'}
                         </div>
                         <Button 
                           variant="ghost" 

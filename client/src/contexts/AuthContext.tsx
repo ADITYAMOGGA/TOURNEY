@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+
+interface User {
+  id: string
+  username: string
+  created_at: string
+}
 
 interface AuthContextType {
   user: User | null
@@ -17,55 +22,80 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
+    // Check if user is logged in via localStorage
+    const savedUser = localStorage.getItem('tourney_user')
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser))
+      } catch (error) {
+        localStorage.removeItem('tourney_user')
+      }
+    }
+    setLoading(false)
   }, [])
 
   const signIn = async (username: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: `${username.toLowerCase()}@tourney.local`, // Convert username to email format
-      password,
-    })
-    return { error }
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username.toLowerCase())
+        .eq('password', password)
+        .single()
+
+      if (error || !data) {
+        return { error: { message: 'Invalid username or password' } }
+      }
+
+      setUser(data)
+      localStorage.setItem('tourney_user', JSON.stringify(data))
+      return { error: null }
+    } catch (error) {
+      return { error: { message: 'Login failed' } }
+    }
   }
 
   const signUp = async (username: string, password: string) => {
-    // Check if username already exists
-    const { data: existingUsers } = await supabase
-      .from('users')
-      .select('username')
-      .eq('username', username.toLowerCase())
-    
-    if (existingUsers && existingUsers.length > 0) {
-      return { error: { message: 'Username already exists' } }
-    }
+    try {
+      // Check if username already exists
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('username')
+        .eq('username', username.toLowerCase())
+        .single()
 
-    const { error } = await supabase.auth.signUp({
-      email: `${username.toLowerCase()}@tourney.local`, // Convert username to email format
-      password,
-      options: {
-        data: {
-          username: username.toLowerCase(),
-        },
-        emailRedirectTo: undefined // Disable email confirmation
+      if (existingUser) {
+        return { error: { message: 'Username already exists' } }
       }
-    })
-    return { error }
+
+      // Create new user
+      const { data, error } = await supabase
+        .from('users')
+        .insert([
+          {
+            username: username.toLowerCase(),
+            password: password,
+            created_at: new Date().toISOString()
+          }
+        ])
+        .select()
+        .single()
+
+      if (error) {
+        return { error: { message: 'Failed to create account' } }
+      }
+
+      setUser(data)
+      localStorage.setItem('tourney_user', JSON.stringify(data))
+      return { error: null }
+    } catch (error) {
+      return { error: { message: 'Signup failed' } }
+    }
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    setUser(null)
+    localStorage.removeItem('tourney_user')
   }
 
   const value = {
