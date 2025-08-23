@@ -3,8 +3,8 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Menu, User, LogOut, MoreVertical, Trophy, Users, Calendar, HelpCircle } from "lucide-react";
 
 export default function Nav() {
   const [location] = useLocation();
@@ -12,10 +12,10 @@ export default function Nav() {
   const { user, signOut } = useAuth();
 
   const navItems = [
-    { href: "/tournaments", label: "Browse Tournaments" },
-    { href: "#how-it-works", label: "How it Works" },
-    { href: "#leaderboards", label: "Leaderboards" },
-    { href: "#support", label: "Support" },
+    { href: "/tournaments", label: "Browse Tournaments", icon: Trophy },
+    { href: "#how-it-works", label: "How it Works", icon: HelpCircle },
+    { href: "#leaderboards", label: "Leaderboards", icon: Users },
+    { href: "#support", label: "Support", icon: Calendar },
   ];
 
   const isActive = (href: string) => {
@@ -36,21 +36,49 @@ export default function Nav() {
           </div>
           
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href}>
+            <div className="ml-10 flex items-baseline space-x-4">
+              {user && (
+                <Link href="/dashboard">
                   <a 
                     className={`px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive(item.href)
+                      isActive("/dashboard")
                         ? "text-primary-orange"
                         : "text-gray-600 hover:text-primary-orange"
                     }`}
-                    data-testid={`link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    data-testid="link-dashboard"
                   >
-                    {item.label}
+                    Dashboard
                   </a>
                 </Link>
-              ))}
+              )}
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-gray-600 hover:text-primary-orange"
+                    data-testid="button-nav-menu"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {navItems.map((item) => {
+                    const IconComponent = item.icon
+                    return (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link href={item.href}>
+                          <a className="flex items-center w-full">
+                            <IconComponent className="w-4 h-4 mr-2" />
+                            {item.label}
+                          </a>
+                        </Link>
+                      </DropdownMenuItem>
+                    )
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           
@@ -68,6 +96,15 @@ export default function Nav() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">
+                      <a className="flex items-center w-full">
+                        <User className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </a>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} data-testid="button-sign-out">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out

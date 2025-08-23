@@ -5,11 +5,13 @@ interface User {
   id: string
   username: string
   created_at: string
+  role?: 'organizer' | 'player'
 }
 
 interface AuthContextType {
   user: User | null
   loading: boolean
+  setUser: (user: User | null) => void
   signIn: (username: string, password: string) => Promise<{ error: any }>
   signUp: (username: string, password: string) => Promise<{ error: any }>
   signOut: () => Promise<void>
@@ -101,6 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     loading,
+    setUser,
     signIn,
     signUp,
     signOut,

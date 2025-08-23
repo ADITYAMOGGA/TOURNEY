@@ -54,7 +54,7 @@ export default function Login() {
             ? "Your account has been created successfully." 
             : "You have been signed in successfully.",
         })
-        navigate("/")
+        navigate("/dashboard")
       }
     } catch (error) {
       toast({

@@ -10,6 +10,8 @@ import Tournaments from "@/pages/tournaments";
 import CreateTournament from "@/pages/create-tournament";
 import TournamentDetails from "@/pages/tournament-details";
 import Login from "@/pages/login";
+import RoleSelection from "@/pages/role-selection";
+import Dashboard from "@/pages/dashboard";
 
 function Router() {
   return (
@@ -19,6 +21,8 @@ function Router() {
       <Route path="/create-tournament" component={CreateTournament} />
       <Route path="/tournament/:id" component={TournamentDetails} />
       <Route path="/login" component={Login} />
+      <Route path="/role-selection" component={RoleSelection} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );
