@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Menu, User, LogOut } from "lucide-react";
 
 export default function Nav() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { href: "/tournaments", label: "Browse Tournaments" },
@@ -52,16 +55,43 @@ export default function Nav() {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              className="text-gray-600 hover:text-primary-orange"
-              data-testid="button-sign-in"
-            >
-              Sign In
-            </Button>
-            <Button className="gradient-primary text-white hover:shadow-lg" data-testid="button-get-started">
-              Get Started
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="text-gray-600 hover:text-primary-orange flex items-center gap-2"
+                    data-testid="button-user-menu"
+                  >
+                    <User className="w-4 h-4" />
+                    {user.user_metadata?.username || 'User'}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={signOut} data-testid="button-sign-out">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button 
+                    variant="ghost" 
+                    className="text-gray-600 hover:text-primary-orange"
+                    data-testid="button-sign-in"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button className="gradient-primary text-white hover:shadow-lg" data-testid="button-get-started">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
           
           <div className="md:hidden">
@@ -88,12 +118,35 @@ export default function Nav() {
                     </Link>
                   ))}
                   <div className="pt-4 space-y-2">
-                    <Button variant="ghost" className="w-full justify-start text-gray-600">
-                      Sign In
-                    </Button>
-                    <Button className="w-full gradient-primary text-white">
-                      Get Started
-                    </Button>
+                    {user ? (
+                      <>
+                        <div className="px-3 py-2 text-sm text-gray-600">
+                          Welcome, {user.user_metadata?.username || 'User'}
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start text-gray-600"
+                          onClick={signOut}
+                          data-testid="button-mobile-sign-out"
+                        >
+                          <LogOut className="w-4 h-4 mr-2" />
+                          Sign Out
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/login">
+                          <Button variant="ghost" className="w-full justify-start text-gray-600">
+                            Sign In
+                          </Button>
+                        </Link>
+                        <Link href="/login">
+                          <Button className="w-full gradient-primary text-white">
+                            Get Started
+                          </Button>
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
