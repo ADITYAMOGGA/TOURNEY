@@ -34,20 +34,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (username: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
-      email: `${username}@tourney.app`, // Convert username to email format
+      email: `${username.toLowerCase()}@tourney.local`, // Convert username to email format
       password,
     })
     return { error }
   }
 
   const signUp = async (username: string, password: string) => {
+    // Check if username already exists
+    const { data: existingUsers } = await supabase
+      .from('users')
+      .select('username')
+      .eq('username', username.toLowerCase())
+    
+    if (existingUsers && existingUsers.length > 0) {
+      return { error: { message: 'Username already exists' } }
+    }
+
     const { error } = await supabase.auth.signUp({
-      email: `${username}@tourney.app`, // Convert username to email format
+      email: `${username.toLowerCase()}@tourney.local`, // Convert username to email format
       password,
       options: {
         data: {
-          username: username,
-        }
+          username: username.toLowerCase(),
+        },
+        emailRedirectTo: undefined // Disable email confirmation
       }
     })
     return { error }
