@@ -14,12 +14,14 @@ export default function Dashboard() {
   const [activeSection, setActiveSection] = useState<'organizer' | 'public'>('public')
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login")
-    } else if (!loading && user && !user.role) {
-      navigate("/role-selection")
+    if (!loading) {
+      if (!user) {
+        navigate("/login")
+      } else if (user && !user.role) {
+        navigate("/role-selection")
+      }
     }
-  }, [user, loading, navigate])
+  }, [loading, navigate])
 
   if (loading) {
     return (

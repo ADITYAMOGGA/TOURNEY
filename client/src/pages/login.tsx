@@ -54,8 +54,10 @@ export default function Login() {
             ? "Your account has been created successfully." 
             : "You have been signed in successfully.",
         })
-        // Redirect signup users to role selection, signin users to dashboard
-        navigate(isSignUp ? "/role-selection" : "/dashboard")
+        // Use setTimeout to ensure state updates before navigation
+        setTimeout(() => {
+          navigate(isSignUp ? "/role-selection" : "/dashboard")
+        }, 100)
       }
     } catch (error) {
       toast({

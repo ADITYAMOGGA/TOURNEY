@@ -40,7 +40,10 @@ export default function RoleSelection() {
         description: `You are now set as a ${role}.`,
       })
 
-      navigate("/dashboard")
+      // Use setTimeout to ensure state updates before navigation
+      setTimeout(() => {
+        navigate("/dashboard")
+      }, 100)
     } catch (error) {
       toast({
         title: "Error",
