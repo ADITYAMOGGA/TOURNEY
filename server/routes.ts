@@ -72,10 +72,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(tournament);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error('Validation errors:', error.errors);
+        console.error('Request body:', req.body);
         return res.status(400).json({ message: "Invalid tournament data", errors: error.errors });
       }
       console.error('Tournament creation error:', error);
-      res.status(500).json({ message: "Failed to create tournament" });
+      res.status(500).json({ message: "Failed to create tournament", error: error instanceof Error ? error.message : String(error) });
     }
   });
 
