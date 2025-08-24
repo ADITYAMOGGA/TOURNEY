@@ -1,5 +1,14 @@
-import { type User, type InsertUser, type Tournament, type InsertTournament, type TournamentRegistration, type InsertTournamentRegistration } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { type User, type InsertUser, type Tournament, type InsertTournament, type TournamentRegistration, type InsertTournamentRegistration, users, tournaments, tournamentRegistrations } from "@shared/schema";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { eq } from "drizzle-orm";
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is required");
+}
+
+const sql = neon(process.env.DATABASE_URL);
+const db = drizzle(sql);
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -117,4 +126,63 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DbStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  async getTournament(id: string): Promise<Tournament | undefined> {
+    const result = await db.select().from(tournaments).where(eq(tournaments.id, id));
+    return result[0];
+  }
+
+  async getAllTournaments(): Promise<Tournament[]> {
+    return await db.select().from(tournaments);
+  }
+
+  async getTournamentsByStatus(status: string): Promise<Tournament[]> {
+    return await db.select().from(tournaments).where(eq(tournaments.status, status));
+  }
+
+  async createTournament(insertTournament: InsertTournament): Promise<Tournament> {
+    const result = await db.insert(tournaments).values(insertTournament).returning();
+    return result[0];
+  }
+
+  async updateTournament(id: string, updates: Partial<Tournament>): Promise<Tournament | undefined> {
+    const result = await db.update(tournaments).set(updates).where(eq(tournaments.id, id)).returning();
+    return result[0];
+  }
+
+  async getTournamentRegistrations(tournamentId: string): Promise<TournamentRegistration[]> {
+    return await db.select().from(tournamentRegistrations).where(eq(tournamentRegistrations.tournamentId, tournamentId));
+  }
+
+  async createTournamentRegistration(insertRegistration: InsertTournamentRegistration): Promise<TournamentRegistration> {
+    const result = await db.insert(tournamentRegistrations).values(insertRegistration).returning();
+    
+    // Update tournament registered players count
+    await db.update(tournaments)
+      .set({ registeredPlayers: db.select({ count: tournaments.registeredPlayers }).from(tournaments).where(eq(tournaments.id, insertRegistration.tournamentId)) })
+      .where(eq(tournaments.id, insertRegistration.tournamentId));
+    
+    return result[0];
+  }
+
+  async getUserTournamentRegistrations(userId: string): Promise<TournamentRegistration[]> {
+    return await db.select().from(tournamentRegistrations).where(eq(tournamentRegistrations.userId, userId));
+  }
+}
+
+export const storage = new DbStorage();
