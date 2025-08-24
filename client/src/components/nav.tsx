@@ -4,23 +4,26 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut, MoreVertical, Trophy, Users, Calendar, HelpCircle } from "lucide-react";
+import { Menu, User, LogOut, Trophy, Users } from "lucide-react";
 
 export default function Nav() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
 
-  const navItems = [
-    { href: "/tournaments", label: "Browse Tournaments", icon: Trophy },
-    { href: "#how-it-works", label: "How it Works", icon: HelpCircle },
-    { href: "#leaderboards", label: "Leaderboards", icon: Users },
-    { href: "#support", label: "Support", icon: Calendar },
-  ];
-
-  const isActive = (href: string) => {
-    return location === href;
+  const getActiveSection = () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('section') as 'organizer' | 'public' || 'public';
   };
+
+  const setActiveSection = (section: 'organizer' | 'public') => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('section', section);
+    window.history.pushState({}, '', `${window.location.pathname}?${params}`);
+    window.location.reload();
+  };
+
+  const activeSection = getActiveSection();
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
@@ -35,52 +38,40 @@ export default function Nav() {
             </Link>
           </div>
           
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {user && (
-                <Link href="/dashboard">
-                  <a 
-                    className={`px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive("/dashboard")
-                        ? "text-primary-orange"
-                        : "text-gray-600 hover:text-primary-orange"
+          {user && user.role && location === '/dashboard' && (
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
+                <Button
+                  variant={activeSection === 'public' ? 'default' : 'ghost'}
+                  onClick={() => setActiveSection('public')}
+                  className={`px-4 py-2 text-sm ${
+                    activeSection === 'public'
+                      ? 'bg-white text-primary-orange shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                  data-testid="button-public-section"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  PUBLIC
+                </Button>
+                {user.role === 'organizer' && (
+                  <Button
+                    variant={activeSection === 'organizer' ? 'default' : 'ghost'}
+                    onClick={() => setActiveSection('organizer')}
+                    className={`px-4 py-2 text-sm ${
+                      activeSection === 'organizer'
+                        ? 'bg-white text-primary-orange shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
-                    data-testid="link-dashboard"
+                    data-testid="button-organizer-section"
                   >
-                    Dashboard
-                  </a>
-                </Link>
-              )}
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="text-gray-600 hover:text-primary-orange"
-                    data-testid="button-nav-menu"
-                  >
-                    <MoreVertical className="h-4 w-4" />
+                    <Trophy className="w-4 h-4 mr-2" />
+                    ORGANIZER
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {navItems.map((item) => {
-                    const IconComponent = item.icon
-                    return (
-                      <DropdownMenuItem key={item.href} asChild>
-                        <Link href={item.href}>
-                          <a className="flex items-center w-full">
-                            <IconComponent className="w-4 h-4 mr-2" />
-                            {item.label}
-                          </a>
-                        </Link>
-                      </DropdownMenuItem>
-                    )
-                  })}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                )}
+              </div>
             </div>
-          </div>
+          )}
           
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
@@ -96,15 +87,6 @@ export default function Nav() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard">
-                      <a className="flex items-center w-full">
-                        <User className="w-4 h-4 mr-2" />
-                        Dashboard
-                      </a>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} data-testid="button-sign-out">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
@@ -140,20 +122,30 @@ export default function Nav() {
               </SheetTrigger>
               <SheetContent>
                 <div className="flex flex-col space-y-4 mt-8">
-                  {navItems.map((item) => (
-                    <Link key={item.href} href={item.href}>
-                      <a
-                        className={`block px-3 py-2 text-base font-medium transition-colors ${
-                          isActive(item.href)
-                            ? "text-primary-orange"
-                            : "text-gray-600 hover:text-primary-orange"
-                        }`}
-                        onClick={() => setIsOpen(false)}
+                  {user && user.role && location === '/dashboard' && (
+                    <div className="space-y-2">
+                      <div className="px-3 py-2 text-sm font-medium text-gray-900">Sections</div>
+                      <Button
+                        variant={activeSection === 'public' ? 'default' : 'ghost'}
+                        onClick={() => { setActiveSection('public'); setIsOpen(false); }}
+                        className="w-full justify-start"
                       >
-                        {item.label}
-                      </a>
-                    </Link>
-                  ))}
+                        <Users className="w-4 h-4 mr-2" />
+                        PUBLIC
+                      </Button>
+                      {user.role === 'organizer' && (
+                        <Button
+                          variant={activeSection === 'organizer' ? 'default' : 'ghost'}
+                          onClick={() => { setActiveSection('organizer'); setIsOpen(false); }}
+                          className="w-full justify-start"
+                        >
+                          <Trophy className="w-4 h-4 mr-2" />
+                          ORGANIZER
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  
                   <div className="pt-4 space-y-2">
                     {user ? (
                       <>
