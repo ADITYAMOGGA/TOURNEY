@@ -19,13 +19,17 @@ import { apiRequest } from "@/lib/queryClient"
 const createTournamentSchema = z.object({
   name: z.string().min(3, "Tournament name must be at least 3 characters"),
   gameMode: z.enum(["BR", "CS"]),
-  type: z.enum(["solo", "duo", "squad"]),
+  type: z.string().min(1, "Type is required"), // Dynamic based on game mode
   slots: z.number().min(4, "Minimum 4 slots required").max(200, "Maximum 200 slots allowed"),
   slotPrice: z.number().min(0, "Slot price cannot be negative"),
   prizePool: z.number().min(0, "Prize pool cannot be negative"),
-  matchCount: z.number().min(1, "At least 1 match required").max(10, "Maximum 10 matches allowed"),
-  killPoints: z.number().min(1, "Kill points must be at least 1").max(10, "Maximum 10 points per kill"),
-  positionPoints: z.string().min(1, "Position points are required"),
+  // BR-specific fields
+  matchCount: z.number().min(1, "At least 1 match required").max(10, "Maximum 10 matches allowed").optional(),
+  killPoints: z.number().min(1, "Kill points must be at least 1").max(10, "Maximum 10 points per kill").optional(),
+  positionPoints: z.string().optional(),
+  // CS-specific fields
+  csGameVariant: z.enum(["Limited", "Unlimited", "Contra", "StateWar"]).optional(),
+  device: z.enum(["PC", "Mobile", "Both"]).optional(),
   startTime: z.string().min(1, "Start date and time are required"),
   rules: z.string().min(10, "Rules must be at least 10 characters"),
 })
@@ -51,6 +55,8 @@ export default function CreateTournament() {
       matchCount: 4,
       killPoints: 1,
       positionPoints: "10,6,5,4,3,2,1",
+      csGameVariant: "Limited",
+      device: "Both",
       startTime: "",
       rules: "",
     },
@@ -62,12 +68,18 @@ export default function CreateTournament() {
       
       const tournamentData = {
         ...data,
-        format: `${data.gameMode} ${data.type.charAt(0).toUpperCase() + data.type.slice(1)}`,
+        format: `${data.gameMode} ${data.type.toUpperCase()}`,
         description: `${data.gameMode === 'BR' ? 'Battle Royale' : 'Clash Squad'} ${data.type} tournament`,
         startTime: new Date(data.startTime),
         registrationDeadline: new Date(new Date(data.startTime).getTime() - 30 * 60 * 1000), // 30 min before start
         organizerId: user.id,
         status: "open",
+        // Set defaults for missing fields based on game mode
+        matchCount: data.gameMode === 'BR' ? data.matchCount : 1,
+        killPoints: data.gameMode === 'BR' ? data.killPoints : 0,
+        positionPoints: data.gameMode === 'BR' ? data.positionPoints : "",
+        csGameVariant: data.gameMode === 'CS' ? data.csGameVariant : null,
+        device: data.gameMode === 'CS' ? data.device : null,
       }
 
       const response = await apiRequest("POST", "/api/tournaments", tournamentData)
@@ -149,6 +161,13 @@ export default function CreateTournament() {
                               onClick={() => {
                                 field.onChange("BR")
                                 setSelectedGameMode("BR")
+                                // Set defaults for BR mode
+                                form.setValue("type", "squad")
+                                form.setValue("slots", 100)
+                                form.setValue("slotPrice", 50)
+                                form.setValue("matchCount", 4)
+                                form.setValue("killPoints", 1)
+                                form.setValue("positionPoints", "10,6,5,4,3,2,1")
                               }}
                               data-testid="button-br-mode"
                             >
@@ -167,6 +186,12 @@ export default function CreateTournament() {
                               onClick={() => {
                                 field.onChange("CS")
                                 setSelectedGameMode("CS")
+                                // Set defaults for CS mode
+                                form.setValue("type", "4v4")
+                                form.setValue("slots", 32)
+                                form.setValue("slotPrice", 100)
+                                form.setValue("csGameVariant", "Limited")
+                                form.setValue("device", "Both")
                               }}
                               data-testid="button-cs-mode"
                             >
@@ -430,15 +455,238 @@ export default function CreateTournament() {
                   </>
                 )}
 
-                {/* CS/CLASH SQUAD Configuration - Placeholder */}
+                {/* CS/CLASH SQUAD Configuration */}
                 {gameMode === "CS" && (
-                  <div className="bg-gray-100 p-8 rounded-xl text-center">
-                    <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Clash Squad Configuration</h3>
-                    <p className="text-gray-600">
-                      Clash Squad tournament configuration will be available after implementing BR mode.
-                    </p>
-                  </div>
+                  <>
+                    {/* Basic Information */}
+                    <div className="bg-blue-50 p-6 rounded-xl">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Trophy className="w-5 h-5 mr-2 text-blue-600" />
+                        Tournament Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                              <FormLabel>Tournament Name</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="e.g., Clash Squad Pro Championship" 
+                                  {...field}
+                                  data-testid="input-tournament-name"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="type"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Team Mode</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger data-testid="select-cs-team-mode">
+                                    <SelectValue placeholder="Select team mode" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="1v1">1v1</SelectItem>
+                                  <SelectItem value="2v2">2v2</SelectItem>
+                                  <SelectItem value="3v3">3v3</SelectItem>
+                                  <SelectItem value="4v4">4v4</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="slots"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Number of Slots</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder="32" 
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                  data-testid="input-slots"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Game Configuration */}
+                    <div className="bg-purple-50 p-6 rounded-xl">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Target className="w-5 h-5 mr-2 text-purple-600" />
+                        Game Configuration
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="csGameVariant"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Game Variant</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger data-testid="select-cs-game-variant">
+                                    <SelectValue placeholder="Select game variant" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="Limited">Limited</SelectItem>
+                                  <SelectItem value="Unlimited">Unlimited</SelectItem>
+                                  <SelectItem value="Contra">Contra</SelectItem>
+                                  <SelectItem value="StateWar">StateWar</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="device"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Device Platform</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger data-testid="select-device">
+                                    <SelectValue placeholder="Select device platform" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="PC">PC Only</SelectItem>
+                                  <SelectItem value="Mobile">Mobile Only</SelectItem>
+                                  <SelectItem value="Both">Both PC & Mobile</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Pricing */}
+                    <div className="bg-green-50 p-6 rounded-xl">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Trophy className="w-5 h-5 mr-2 text-green-600" />
+                        Pricing & Rewards
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="slotPrice"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Entry Fee (₹)</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder="100" 
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                  data-testid="input-entry-fee"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="prizePool"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Prize Pool (₹)</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder="10000" 
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                  data-testid="input-prize-pool"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Schedule */}
+                    <div className="bg-orange-50 p-6 rounded-xl">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Calendar className="w-5 h-5 mr-2 text-orange-600" />
+                        Schedule
+                      </h3>
+                      <div className="grid grid-cols-1 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="startTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Start Date & Time</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="datetime-local" 
+                                  {...field}
+                                  data-testid="input-start-time"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Rules */}
+                    <div className="bg-red-50 p-6 rounded-xl">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Users className="w-5 h-5 mr-2 text-red-600" />
+                        Tournament Rules
+                      </h3>
+                      <FormField
+                        control={form.control}
+                        name="rules"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Rules & Guidelines</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Enter tournament rules, guidelines, and important information for participants..."
+                                className="min-h-[120px]"
+                                {...field}
+                                data-testid="textarea-rules"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </>
                 )}
 
                 {/* Submit Buttons */}
@@ -456,7 +704,7 @@ export default function CreateTournament() {
                   <Button 
                     type="submit" 
                     className="flex-1 gradient-primary text-white"
-                    disabled={createTournamentMutation.isPending || gameMode === "CS"}
+                    disabled={createTournamentMutation.isPending}
                     data-testid="button-create-tournament"
                   >
                     {createTournamentMutation.isPending ? (

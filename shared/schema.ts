@@ -14,8 +14,8 @@ export const tournaments = pgTable("tournaments", {
   name: text("name").notNull(),
   description: text("description"),
   gameMode: text("game_mode").notNull(), // "BR" or "CS"
-  type: text("type").notNull(), // "solo", "duo", "squad"
-  format: text("format").notNull(), // "BR Solo", "BR Duo", "BR Squad", "CS Solo", etc.
+  type: text("type").notNull(), // "solo", "duo", "squad" for BR; "1v1", "2v2", "3v3", "4v4" for CS
+  format: text("format").notNull(), // "BR Solo", "BR Duo", "BR Squad", "CS 1v1", etc.
   prizePool: integer("prize_pool").notNull(),
   slotPrice: integer("slot_price").notNull(),
   slots: integer("slots").notNull(),
@@ -23,6 +23,9 @@ export const tournaments = pgTable("tournaments", {
   matchCount: integer("match_count").notNull().default(1),
   killPoints: integer("kill_points").notNull().default(1),
   positionPoints: text("position_points").notNull().default("10,6,5,4,3,2,1"), // Points for positions 1,2,3,4,5,6,7+
+  // CS-specific fields
+  csGameVariant: text("cs_game_variant"), // "Limited", "Unlimited", "Contra", "StateWar"
+  device: text("device"), // "PC", "Mobile", "Both"
   rules: text("rules"),
   status: text("status").notNull().default("open"), // "open", "starting", "live", "completed"
   startTime: timestamp("start_time").notNull(),
