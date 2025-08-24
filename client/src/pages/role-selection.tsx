@@ -4,8 +4,6 @@ import { useLocation } from "wouter"
 import { supabase } from "@/lib/supabase"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Trophy, Users, Shield, Gamepad2 } from "lucide-react"
 
 export default function RoleSelection() {
   const [loading, setLoading] = useState(false)
@@ -55,60 +53,48 @@ export default function RoleSelection() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full text-center">
-        <div className="mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-dark-bg mb-6">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="max-w-md w-full text-center space-y-8">
+        
+        <div className="space-y-3">
+          <h1 className="text-3xl font-bold text-gray-900">
             👉 Tell us who you are
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-gray-600">
             This helps us set up your experience the right way.
           </p>
         </div>
 
-        <div className="space-y-6">
-          <Card 
-            className="hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary-orange p-8" 
+        <div className="space-y-4">
+          <button
             onClick={() => selectRole('organizer')}
+            disabled={loading}
+            className="w-full p-6 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all text-center"
+            data-testid="button-select-organizer"
           >
-            <CardContent className="text-center space-y-4">
-              <div className="text-6xl mb-4">🏆</div>
-              <CardTitle className="text-2xl font-bold text-dark-bg">Organizer</CardTitle>
-              <CardDescription className="text-lg text-gray-600">
-                I want to host and manage tournaments.
-              </CardDescription>
-              <Button 
-                className="w-full gradient-primary text-white py-4 text-lg font-semibold hover:shadow-lg mt-6"
-                onClick={() => selectRole('organizer')}
-                disabled={loading}
-                data-testid="button-select-organizer"
-              >
-                {loading ? "Setting up..." : "Choose Organizer"}
-              </Button>
-            </CardContent>
-          </Card>
+            <div className="text-4xl mb-2">🏆</div>
+            <div className="text-xl font-semibold text-gray-900 mb-1">Organizer</div>
+            <div className="text-gray-600">I want to host and manage tournaments.</div>
+          </button>
 
-          <Card 
-            className="hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-blue-500 p-8" 
+          <button
             onClick={() => selectRole('player')}
+            disabled={loading}
+            className="w-full p-6 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-center"
+            data-testid="button-select-player"
           >
-            <CardContent className="text-center space-y-4">
-              <div className="text-6xl mb-4">🎮</div>
-              <CardTitle className="text-2xl font-bold text-dark-bg">Player</CardTitle>
-              <CardDescription className="text-lg text-gray-600">
-                I want to join and play in tournaments.
-              </CardDescription>
-              <Button 
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 text-lg font-semibold hover:shadow-lg mt-6"
-                onClick={() => selectRole('player')}
-                disabled={loading}
-                data-testid="button-select-player"
-              >
-                {loading ? "Setting up..." : "Choose Player"}
-              </Button>
-            </CardContent>
-          </Card>
+            <div className="text-4xl mb-2">🎮</div>
+            <div className="text-xl font-semibold text-gray-900 mb-1">Player</div>
+            <div className="text-gray-600">I want to join and play in tournaments.</div>
+          </button>
         </div>
+
+        {loading && (
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
+            <p className="text-gray-600 mt-2">Setting up your account...</p>
+          </div>
+        )}
       </div>
     </div>
   )
