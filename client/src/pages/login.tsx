@@ -77,9 +77,9 @@ export default function Login() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-2 mb-4">
               <img src={garenaLogo} alt="Garena" className="h-10 w-auto" />
-              <span className="text-3xl font-bold text-dark-bg">X</span>
+              <span className="text-lg font-normal text-dark-bg">X</span>
               <img src={tourneyLogo} alt="Tourney" className="h-12 w-auto" />
             </div>
           </Link>

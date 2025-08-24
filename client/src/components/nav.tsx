@@ -24,9 +24,9 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <img src={garenaLogo} alt="Garena" className="h-8 w-auto" />
-                <span className="text-2xl font-bold text-dark-bg">X</span>
+                <span className="text-sm font-normal text-dark-bg">X</span>
                 <img src={tourneyLogo} alt="Tourney" className="h-10 w-auto" />
               </div>
             </Link>
