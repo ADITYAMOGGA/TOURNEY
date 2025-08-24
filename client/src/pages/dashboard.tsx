@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { useLocation } from "wouter"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Nav from "@/components/nav"
 import Footer from "@/components/footer"
 import AdminSection from "../components/admin-section"
@@ -9,13 +9,7 @@ import PublicSection from "../components/public-section"
 export default function Dashboard() {
   const { user, loading } = useAuth()
   const [, navigate] = useLocation()
-  
-  const getActiveSection = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('section') as 'organizer' | 'public' || 'public';
-  };
-  
-  const activeSection = getActiveSection();
+  const [activeSection, setActiveSection] = useState<'organizer' | 'public'>('public')
 
   useEffect(() => {
     if (!loading) {
@@ -44,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Nav />
+      <Nav activeSection={activeSection} setActiveSection={setActiveSection} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">

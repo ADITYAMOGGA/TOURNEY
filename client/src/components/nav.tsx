@@ -6,24 +6,15 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Menu, User, LogOut, Trophy, Users } from "lucide-react";
 
-export default function Nav() {
+interface NavProps {
+  activeSection?: 'organizer' | 'public'
+  setActiveSection?: (section: 'organizer' | 'public') => void
+}
+
+export default function Nav({ activeSection = 'public', setActiveSection }: NavProps = {}) {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
-
-  const getActiveSection = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('section') as 'organizer' | 'public' || 'public';
-  };
-
-  const setActiveSection = (section: 'organizer' | 'public') => {
-    const params = new URLSearchParams(window.location.search);
-    params.set('section', section);
-    window.history.pushState({}, '', `${window.location.pathname}?${params}`);
-    window.location.reload();
-  };
-
-  const activeSection = getActiveSection();
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
@@ -43,7 +34,7 @@ export default function Nav() {
               <div className="ml-10 flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
                 <Button
                   variant={activeSection === 'public' ? 'default' : 'ghost'}
-                  onClick={() => setActiveSection('public')}
+                  onClick={() => setActiveSection?.('public')}
                   className={`px-4 py-2 text-sm ${
                     activeSection === 'public'
                       ? 'bg-white text-primary-orange shadow-sm'
@@ -57,7 +48,7 @@ export default function Nav() {
                 {user.role === 'organizer' && (
                   <Button
                     variant={activeSection === 'organizer' ? 'default' : 'ghost'}
-                    onClick={() => setActiveSection('organizer')}
+                    onClick={() => setActiveSection?.('organizer')}
                     className={`px-4 py-2 text-sm ${
                       activeSection === 'organizer'
                         ? 'bg-white text-primary-orange shadow-sm'
@@ -127,7 +118,7 @@ export default function Nav() {
                       <div className="px-3 py-2 text-sm font-medium text-gray-900">Sections</div>
                       <Button
                         variant={activeSection === 'public' ? 'default' : 'ghost'}
-                        onClick={() => { setActiveSection('public'); setIsOpen(false); }}
+                        onClick={() => { setActiveSection?.('public'); setIsOpen(false); }}
                         className="w-full justify-start"
                       >
                         <Users className="w-4 h-4 mr-2" />
@@ -136,7 +127,7 @@ export default function Nav() {
                       {user.role === 'organizer' && (
                         <Button
                           variant={activeSection === 'organizer' ? 'default' : 'ghost'}
-                          onClick={() => { setActiveSection('organizer'); setIsOpen(false); }}
+                          onClick={() => { setActiveSection?.('organizer'); setIsOpen(false); }}
                           className="w-full justify-start"
                         >
                           <Trophy className="w-4 h-4 mr-2" />
