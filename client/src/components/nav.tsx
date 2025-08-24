@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Menu, User, LogOut, Trophy, Users } from "lucide-react";
 import garenaLogo from "@assets/garena_1756025529823.png";
+import tourneyLogo from "@assets/image_1756054912806.png";
 
 interface NavProps {
   activeSection?: 'organizer' | 'public'
@@ -25,10 +26,8 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center gap-3">
                 <img src={garenaLogo} alt="Garena" className="h-8 w-auto" />
-                <div>
-                  <h1 className="text-2xl font-bold text-dark-bg" data-testid="text-logo">GARENA x TOURNEY</h1>
-                  <span className="text-xs text-gray-500 -mt-1 block">Free Fire Tournaments</span>
-                </div>
+                <span className="text-2xl font-bold text-dark-bg">X</span>
+                <img src={tourneyLogo} alt="Tourney" className="h-10 w-auto" />
               </div>
             </Link>
           </div>

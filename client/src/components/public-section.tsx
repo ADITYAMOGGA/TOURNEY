@@ -24,7 +24,7 @@ export default function PublicSection() {
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-8 text-white">
         <h2 className="text-2xl font-bold mb-4">Tournament Browser</h2>
         <p className="text-lg opacity-90 mb-6">
-          Discover and join exciting Free Fire tournaments happening now
+          Discover and join exciting gaming tournaments happening now
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link href="/tournaments">

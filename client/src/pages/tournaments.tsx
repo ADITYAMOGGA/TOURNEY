@@ -102,7 +102,7 @@ export default function Tournaments() {
             <div className="col-span-full text-center py-12">
               <Trophy className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No tournaments available</h3>
-              <p className="text-gray-600 mb-6">Be the first to create a tournament for the Free Fire community.</p>
+              <p className="text-gray-600 mb-6">Be the first to create a tournament for the gaming community.</p>
               <Link href="/create-tournament">
                 <Button className="gradient-primary text-white">
                   <Plus className="w-4 h-4 mr-2" />

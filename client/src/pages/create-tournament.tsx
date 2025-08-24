@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Plus, Trophy, Users, Calendar, Target } from "lucide-react"
 import { apiRequest } from "@/lib/queryClient"
 
-// Enhanced schema for Free Fire tournaments
+// Enhanced schema for gaming tournaments
 const createTournamentSchema = z.object({
   name: z.string().min(3, "Tournament name must be at least 3 characters"),
   gameMode: z.enum(["BR", "CS"]),
@@ -108,7 +108,7 @@ export default function CreateTournament() {
           </Link>
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Tournament</h1>
-            <p className="text-gray-600">Set up your Free Fire tournament with custom rules and settings</p>
+            <p className="text-gray-600">Set up your gaming tournament with custom rules and settings</p>
           </div>
         </div>
 
@@ -119,7 +119,7 @@ export default function CreateTournament() {
               Tournament Configuration
             </CardTitle>
             <CardDescription className="text-orange-100">
-              Configure your Free Fire tournament settings and rules
+              Configure your gaming tournament settings and rules
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
@@ -200,7 +200,7 @@ export default function CreateTournament() {
                               <FormLabel>Tournament Name</FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder="e.g., Free Fire Pro Championship" 
+                                  placeholder="e.g., Gaming Pro Championship" 
                                   {...field}
                                   data-testid="input-tournament-name"
                                 />

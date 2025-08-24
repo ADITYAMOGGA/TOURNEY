@@ -11,12 +11,12 @@ export default function Hero() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-dark-bg leading-tight">
               Organize & Join
               <span className="bg-gradient-to-r from-primary-orange to-secondary-orange bg-clip-text text-transparent">
-                {" "}Free Fire{" "}
+                {" "}Gaming{" "}
               </span>
               Tournaments
             </h1>
             <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-              The ultimate platform for Free Fire tournament organizers and players. Create tournaments, join competitions, and climb the leaderboards.
+              The ultimate platform for gaming tournament organizers and players. Create tournaments, join competitions, and climb the leaderboards.
             </p>
             
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -56,7 +56,7 @@ export default function Hero() {
                 <div className="flex items-center justify-between text-white">
                   <div>
                     <h3 className="text-lg font-semibold">Featured Tournament</h3>
-                    <p className="text-sm opacity-90">Free Fire Championship</p>
+                    <p className="text-sm opacity-90">Gaming Championship</p>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold">₹50,000</div>

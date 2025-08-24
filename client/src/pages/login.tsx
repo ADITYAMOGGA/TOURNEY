@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Eye, EyeOff, LogIn, UserPlus } from "lucide-react"
 import garenaLogo from "@assets/garena_1756025529823.png"
+import tourneyLogo from "@assets/image_1756054912806.png"
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -78,10 +79,11 @@ export default function Login() {
           <Link href="/">
             <div className="flex items-center justify-center gap-3 mb-4">
               <img src={garenaLogo} alt="Garena" className="h-10 w-auto" />
-              <h1 className="text-3xl font-bold text-dark-bg">GARENA x TOURNEY</h1>
+              <span className="text-3xl font-bold text-dark-bg">X</span>
+              <img src={tourneyLogo} alt="Tourney" className="h-12 w-auto" />
             </div>
           </Link>
-          <p className="text-gray-600">Free Fire Tournament Platform</p>
+          <p className="text-gray-600">Tournament Platform</p>
         </div>
 
         <Card className="shadow-xl">
@@ -91,7 +93,7 @@ export default function Login() {
             </CardTitle>
             <CardDescription>
               {isSignUp 
-                ? "Join the Free Fire tournament community" 
+                ? "Join the tournament community" 
                 : "Sign in to your tournament account"
               }
             </CardDescription>
