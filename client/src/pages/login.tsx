@@ -54,7 +54,8 @@ export default function Login() {
             ? "Your account has been created successfully." 
             : "You have been signed in successfully.",
         })
-        navigate("/dashboard")
+        // Redirect signup users to role selection, signin users to dashboard
+        navigate(isSignUp ? "/role-selection" : "/dashboard")
       }
     } catch (error) {
       toast({

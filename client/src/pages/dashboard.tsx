@@ -1,14 +1,17 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { useLocation } from "wouter"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Nav from "@/components/nav"
 import Footer from "@/components/footer"
 import AdminSection from "../components/admin-section"
 import PublicSection from "../components/public-section"
+import { Button } from "@/components/ui/button"
+import { Trophy, Users } from "lucide-react"
 
 export default function Dashboard() {
   const { user, loading } = useAuth()
   const [, navigate] = useLocation()
+  const [activeSection, setActiveSection] = useState<'organizer' | 'public'>('public')
 
   useEffect(() => {
     if (!loading && !user) {
@@ -47,16 +50,57 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {user.role === 'organizer' ? (
-          <div className="space-y-8">
-            <AdminSection />
-            <div className="border-t border-gray-200 pt-8">
-              <h2 className="text-2xl font-bold text-dark-bg mb-6">Browse All Tournaments</h2>
-              <PublicSection />
+        {/* Header Tabs */}
+        <div className="mb-8">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+            <Button
+              variant={activeSection === 'public' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('public')}
+              className={`px-6 py-2 ${
+                activeSection === 'public'
+                  ? 'bg-white text-primary-orange shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              data-testid="button-public-section"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              PUBLIC
+            </Button>
+            {user.role === 'organizer' && (
+              <Button
+                variant={activeSection === 'organizer' ? 'default' : 'ghost'}
+                onClick={() => setActiveSection('organizer')}
+                className={`px-6 py-2 ${
+                  activeSection === 'organizer'
+                    ? 'bg-white text-primary-orange shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                data-testid="button-organizer-section"
+              >
+                <Trophy className="w-4 h-4 mr-2" />
+                ORGANIZER
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Content based on active section */}
+        {activeSection === 'public' ? (
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-dark-bg mb-2">All Tournaments</h2>
+              <p className="text-gray-600">Discover and join exciting Free Fire tournaments</p>
             </div>
+            <PublicSection />
           </div>
         ) : (
-          <PublicSection />
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-dark-bg mb-2">Organizer Dashboard</h2>
+              <p className="text-gray-600">Create and manage your tournaments</p>
+            </div>
+            <AdminSection />
+          </div>
         )}
       </div>
 
