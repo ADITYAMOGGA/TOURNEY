@@ -41,12 +41,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Auto-generate format based on gameMode and type
       if (!validatedData.format) {
-        validatedData.format = `${validatedData.gameMode} ${validatedData.type.charAt(0).toUpperCase() + validatedData.type.slice(1)}`;
+        validatedData.format = `${validatedData.gameMode} ${validatedData.type.toUpperCase()}`;
       }
       
       // Auto-generate description if not provided
       if (!validatedData.description) {
         validatedData.description = `${validatedData.gameMode === 'BR' ? 'Battle Royale' : 'Clash Squad'} ${validatedData.type} tournament`;
+      }
+      
+      // Set defaults based on game mode
+      if (validatedData.gameMode === 'BR') {
+        // Set defaults for BR tournaments
+        validatedData.matchCount = validatedData.matchCount || 1;
+        validatedData.killPoints = validatedData.killPoints || 1;
+        validatedData.positionPoints = validatedData.positionPoints || "10,6,5,4,3,2,1";
+        // Clear CS-specific fields
+        validatedData.csGameVariant = undefined;
+        validatedData.device = undefined;
+      } else if (validatedData.gameMode === 'CS') {
+        // Set defaults for CS tournaments
+        validatedData.matchCount = 1;
+        validatedData.killPoints = 0;
+        validatedData.positionPoints = "";
+        // Ensure CS-specific fields have values
+        validatedData.csGameVariant = validatedData.csGameVariant || "Limited";
+        validatedData.device = validatedData.device || "Both";
       }
       
       const tournament = await storage.createTournament(validatedData);
@@ -55,6 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid tournament data", errors: error.errors });
       }
+      console.error('Tournament creation error:', error);
       res.status(500).json({ message: "Failed to create tournament" });
     }
   });

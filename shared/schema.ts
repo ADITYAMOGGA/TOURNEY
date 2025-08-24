@@ -20,9 +20,9 @@ export const tournaments = pgTable("tournaments", {
   slotPrice: integer("slot_price").notNull(),
   slots: integer("slots").notNull(),
   registeredPlayers: integer("registered_players").notNull().default(0),
-  matchCount: integer("match_count").notNull().default(1),
-  killPoints: integer("kill_points").notNull().default(1),
-  positionPoints: text("position_points").notNull().default("10,6,5,4,3,2,1"), // Points for positions 1,2,3,4,5,6,7+
+  matchCount: integer("match_count").default(1),
+  killPoints: integer("kill_points").default(1),
+  positionPoints: text("position_points").default("10,6,5,4,3,2,1"), // Points for positions 1,2,3,4,5,6,7+
   // CS-specific fields
   csGameVariant: text("cs_game_variant"), // "Limited", "Unlimited", "Contra", "StateWar"
   device: text("device"), // "PC", "Mobile", "Both"
@@ -52,6 +52,14 @@ export const insertTournamentSchema = createInsertSchema(tournaments).omit({
   id: true,
   registeredPlayers: true,
   createdAt: true,
+}).extend({
+  // Make BR-specific fields optional for CS tournaments
+  matchCount: z.number().optional(),
+  killPoints: z.number().optional(), 
+  positionPoints: z.string().optional(),
+  // Make CS-specific fields optional for BR tournaments
+  csGameVariant: z.string().optional(),
+  device: z.string().optional(),
 });
 
 export const insertTournamentRegistrationSchema = createInsertSchema(tournamentRegistrations).omit({
