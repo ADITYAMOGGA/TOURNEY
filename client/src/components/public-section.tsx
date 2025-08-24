@@ -135,7 +135,7 @@ export default function PublicSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
-            Array.from({ length: 6 }).map((_, i) => (
+            Array.from({ length: 3 }).map((_, i) => (
               <Card key={i} className="overflow-hidden">
                 <div className="h-24 bg-gray-200">
                   <Skeleton className="w-full h-full" />
@@ -143,40 +143,25 @@ export default function PublicSection() {
                 <CardContent className="p-6">
                   <Skeleton className="h-4 w-3/4 mb-2" />
                   <Skeleton className="h-4 w-1/2 mb-4" />
-                  <div className="space-y-3">
-                    <Skeleton className="h-3 w-full" />
-                    <Skeleton className="h-3 w-full" />
-                    <Skeleton className="h-3 w-full" />
-                  </div>
                   <Skeleton className="h-10 w-full mt-6" />
                 </CardContent>
               </Card>
             ))
-          ) : filteredTournaments.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <Trophy className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                {filter === 'all' ? 'No tournaments available' : `No ${filter} tournaments`}
-              </h4>
-              <p className="text-gray-600 mb-6">
-                {filter === 'all' 
-                  ? 'Check back soon for new tournaments.' 
-                  : `Try changing the filter to see other tournaments.`
-                }
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => setFilter('all')}
-                data-testid="button-reset-filter"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Show All Tournaments
-              </Button>
-            </div>
           ) : (
-            filteredTournaments.map((tournament) => (
-              <TournamentCard key={tournament.id} tournament={tournament} />
-            ))
+            <div className="col-span-full text-center py-16">
+              <div className="max-w-md mx-auto">
+                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Trophy className="w-16 h-16 text-gray-400" />
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-4">No Tournaments Yet</h4>
+                <p className="text-gray-600 mb-8 text-lg">
+                  Be the first to discover amazing tournaments! Check back soon or create your own.
+                </p>
+                <div className="text-center text-gray-500">
+                  <p className="text-sm">Organizers can create tournaments to get started</p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 

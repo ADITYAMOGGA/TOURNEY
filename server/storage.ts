@@ -26,66 +26,6 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.tournaments = new Map();
     this.tournamentRegistrations = new Map();
-    
-    // Initialize with some sample tournaments
-    this.initializeSampleData();
-  }
-
-  private initializeSampleData() {
-    const sampleTournaments: Tournament[] = [
-      {
-        id: "1",
-        name: "Free Fire Pro League",
-        description: "Professional championship tournament for elite players",
-        type: "squad",
-        format: "BR Squad",
-        prizePool: 25000,
-        entryFee: 50,
-        maxPlayers: 800,
-        registeredPlayers: 456,
-        status: "open",
-        startTime: new Date(Date.now() + 4.5 * 60 * 60 * 1000), // 4.5 hours from now
-        registrationDeadline: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours from now
-        organizerId: "admin-1",
-        createdAt: new Date(),
-      },
-      {
-        id: "2",
-        name: "Clash Royale",
-        description: "Solo tournament for individual champions",
-        type: "solo",
-        format: "BR Solo",
-        prizePool: 15000,
-        entryFee: 30,
-        maxPlayers: 1000,
-        registeredPlayers: 892,
-        status: "starting",
-        startTime: new Date(Date.now() + 45 * 60 * 1000), // 45 minutes from now
-        registrationDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
-        organizerId: "admin-1",
-        createdAt: new Date(),
-      },
-      {
-        id: "3",
-        name: "Weekend Warriors",
-        description: "Weekend duo tournament for casual competitors",
-        type: "duo",
-        format: "BR Duo",
-        prizePool: 40000,
-        entryFee: 80,
-        maxPlayers: 600,
-        registeredPlayers: 585,
-        status: "open",
-        startTime: new Date(Date.now() + 2.25 * 60 * 60 * 1000), // 2h 15m from now
-        registrationDeadline: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours from now
-        organizerId: "admin-1",
-        createdAt: new Date(),
-      }
-    ];
-
-    sampleTournaments.forEach(tournament => {
-      this.tournaments.set(tournament.id, tournament);
-    });
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -124,6 +64,7 @@ export class MemStorage implements IStorage {
     const tournament: Tournament = {
       ...insertTournament,
       id,
+      description: insertTournament.description ?? null,
       registeredPlayers: 0,
       createdAt: new Date(),
     };
@@ -151,6 +92,8 @@ export class MemStorage implements IStorage {
     const registration: TournamentRegistration = {
       ...insertRegistration,
       id,
+      teamName: insertRegistration.teamName ?? null,
+      playerNames: insertRegistration.playerNames ?? null,
       registeredAt: new Date(),
     };
     this.tournamentRegistrations.set(id, registration);

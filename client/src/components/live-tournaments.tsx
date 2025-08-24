@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import TournamentCard from "./tournament-card";
+import { Trophy } from "lucide-react";
 
 export default function LiveTournaments() {
   const { data: tournaments, isLoading } = useQuery<Tournament[]>({
@@ -53,19 +54,20 @@ export default function LiveTournaments() {
                 </div>
               </div>
             ))
-          ) : tournaments && tournaments.length > 0 ? (
-            tournaments.slice(0, 3).map((tournament) => (
-              <TournamentCard key={tournament.id} tournament={tournament} />
-            ))
           ) : (
-            <div className="col-span-full text-center py-12">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No tournaments available</h3>
-              <p className="text-gray-600 mb-6">Be the first to create a tournament for the Free Fire community.</p>
-              <Link href="/create-tournament">
-                <Button className="gradient-primary text-white">
-                  Create Tournament
-                </Button>
-              </Link>
+            <div className="col-span-full text-center py-16">
+              <div className="max-w-md mx-auto">
+                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Trophy className="w-16 h-16 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">No Tournaments Available</h3>
+                <p className="text-gray-600 mb-8 text-lg">
+                  Be the first to create an amazing Free Fire tournament for the community!
+                </p>
+                <div className="text-center text-gray-500">
+                  <p className="text-sm">Organizers can create tournaments to get started</p>
+                </div>
+              </div>
             </div>
           )}
         </div>
