@@ -53,20 +53,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set defaults based on game mode
       if (validatedData.gameMode === 'BR') {
         // Set defaults for BR tournaments
-        validatedData.matchCount = validatedData.matchCount || 1;
-        validatedData.killPoints = validatedData.killPoints || 1;
-        validatedData.positionPoints = validatedData.positionPoints || "10,6,5,4,3,2,1";
-        // Don't include CS-specific fields for BR tournaments
-        delete validatedData.csGameVariant;
-        delete validatedData.device;
+        if (!validatedData.matchCount) validatedData.matchCount = 1;
+        if (!validatedData.killPoints) validatedData.killPoints = 1;
+        if (!validatedData.positionPoints) validatedData.positionPoints = "10,6,5,4,3,2,1";
       } else if (validatedData.gameMode === 'CS') {
         // Set defaults for CS tournaments
         validatedData.matchCount = 1;
         validatedData.killPoints = 0;
         validatedData.positionPoints = "";
-        // Ensure CS-specific fields have values
-        validatedData.csGameVariant = validatedData.csGameVariant || "Limited";
-        validatedData.device = validatedData.device || "Both";
+        if (!validatedData.csGameVariant) validatedData.csGameVariant = "Limited";
+        if (!validatedData.device) validatedData.device = "Both";
       }
       
       const tournament = await storage.createTournament(validatedData);

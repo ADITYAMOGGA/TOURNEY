@@ -52,14 +52,6 @@ export const insertTournamentSchema = createInsertSchema(tournaments).omit({
   id: true,
   registeredPlayers: true,
   createdAt: true,
-}).extend({
-  // Make BR-specific fields optional for CS tournaments
-  matchCount: z.number().optional(),
-  killPoints: z.number().optional(), 
-  positionPoints: z.string().optional(),
-  // Make CS-specific fields optional for BR tournaments
-  csGameVariant: z.string().optional(),
-  device: z.string().optional(),
 });
 
 export const insertTournamentRegistrationSchema = createInsertSchema(tournamentRegistrations).omit({
