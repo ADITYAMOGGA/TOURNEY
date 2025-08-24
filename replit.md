@@ -1,8 +1,8 @@
-# Tournament Management Platform
+# GARENA x TOURNEY - Tournament Management Platform
 
 ## Overview
 
-This is a Free Fire tournament management platform that allows organizers to create and manage tournaments while enabling players to discover and join competitive events. The application provides a comprehensive solution for tournament organization, player registration, and competition tracking.
+This is the official GARENA x TOURNEY Free Fire tournament management platform that allows organizers to create and manage tournaments while enabling players to discover and join competitive events. The application provides a comprehensive solution for tournament organization, player registration, and competition tracking.
 
 ## User Preferences
 
@@ -46,7 +46,7 @@ Preferred communication style: Simple, everyday language.
 - **Component variants** using class-variance-authority for systematic styling
 - **Responsive design** with mobile-first approach
 - **Accessibility features** through Radix UI primitives
-- **Custom color palette** with orange accent colors for Free Fire branding
+- **Custom color palette** with orange accent colors for GARENA x TOURNEY branding
 
 ### Tournament Features
 - **Multiple tournament types** (solo, duo, squad)

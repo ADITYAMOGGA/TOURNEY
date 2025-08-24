@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Eye, EyeOff, LogIn, UserPlus } from "lucide-react"
+import garenaLogo from "@assets/garena_1756025529823.png"
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -75,7 +76,10 @@ export default function Login() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/">
-            <h1 className="text-3xl font-bold text-dark-bg mb-2">TOURNEY</h1>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img src={garenaLogo} alt="Garena" className="h-10 w-auto" />
+              <h1 className="text-3xl font-bold text-dark-bg">GARENA x TOURNEY</h1>
+            </div>
           </Link>
           <p className="text-gray-600">Free Fire Tournament Platform</p>
         </div>

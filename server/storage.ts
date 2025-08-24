@@ -65,6 +65,7 @@ export class MemStorage implements IStorage {
       ...insertTournament,
       id,
       description: insertTournament.description ?? null,
+      status: insertTournament.status ?? "open",
       registeredPlayers: 0,
       createdAt: new Date(),
     };
