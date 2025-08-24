@@ -37,6 +37,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tournaments", async (req, res) => {
     try {
+      console.log('Raw request body:', JSON.stringify(req.body, null, 2));
       const validatedData = insertTournamentSchema.parse(req.body);
       
       // Auto-generate format based on gameMode and type
@@ -55,9 +56,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.matchCount = validatedData.matchCount || 1;
         validatedData.killPoints = validatedData.killPoints || 1;
         validatedData.positionPoints = validatedData.positionPoints || "10,6,5,4,3,2,1";
-        // Clear CS-specific fields
-        validatedData.csGameVariant = undefined;
-        validatedData.device = undefined;
+        // Don't include CS-specific fields for BR tournaments
+        delete validatedData.csGameVariant;
+        delete validatedData.device;
       } else if (validatedData.gameMode === 'CS') {
         // Set defaults for CS tournaments
         validatedData.matchCount = 1;

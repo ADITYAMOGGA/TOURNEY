@@ -78,8 +78,8 @@ export default function CreateTournament() {
         matchCount: data.gameMode === 'BR' ? data.matchCount : 1,
         killPoints: data.gameMode === 'BR' ? data.killPoints : 0,
         positionPoints: data.gameMode === 'BR' ? data.positionPoints : "",
-        csGameVariant: data.gameMode === 'CS' ? data.csGameVariant : null,
-        device: data.gameMode === 'CS' ? data.device : null,
+        csGameVariant: data.gameMode === 'CS' ? data.csGameVariant : undefined,
+        device: data.gameMode === 'CS' ? data.device : undefined,
       }
 
       const response = await apiRequest("POST", "/api/tournaments", tournamentData)
