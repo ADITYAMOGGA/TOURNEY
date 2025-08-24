@@ -38,6 +38,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tournaments", async (req, res) => {
     try {
       const validatedData = insertTournamentSchema.parse(req.body);
+      
+      // Auto-generate format based on gameMode and type
+      if (!validatedData.format) {
+        validatedData.format = `${validatedData.gameMode} ${validatedData.type.charAt(0).toUpperCase() + validatedData.type.slice(1)}`;
+      }
+      
+      // Auto-generate description if not provided
+      if (!validatedData.description) {
+        validatedData.description = `${validatedData.gameMode === 'BR' ? 'Battle Royale' : 'Clash Squad'} ${validatedData.type} tournament`;
+      }
+      
       const tournament = await storage.createTournament(validatedData);
       res.status(201).json(tournament);
     } catch (error) {
@@ -57,7 +68,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Tournament not found" });
       }
       
-      if (tournament.registeredPlayers >= tournament.maxPlayers) {
+      if (tournament.registeredPlayers >= tournament.slots) {
         return res.status(400).json({ message: "Tournament is full" });
       }
       

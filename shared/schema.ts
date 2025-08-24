@@ -13,12 +13,17 @@ export const tournaments = pgTable("tournaments", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description"),
+  gameMode: text("game_mode").notNull(), // "BR" or "CS"
   type: text("type").notNull(), // "solo", "duo", "squad"
-  format: text("format").notNull(), // "BR Solo", "BR Duo", "BR Squad"
+  format: text("format").notNull(), // "BR Solo", "BR Duo", "BR Squad", "CS Solo", etc.
   prizePool: integer("prize_pool").notNull(),
-  entryFee: integer("entry_fee").notNull(),
-  maxPlayers: integer("max_players").notNull(),
+  slotPrice: integer("slot_price").notNull(),
+  slots: integer("slots").notNull(),
   registeredPlayers: integer("registered_players").notNull().default(0),
+  matchCount: integer("match_count").notNull().default(1),
+  killPoints: integer("kill_points").notNull().default(1),
+  positionPoints: text("position_points").notNull().default("10,6,5,4,3,2,1"), // Points for positions 1,2,3,4,5,6,7+
+  rules: text("rules"),
   status: text("status").notNull().default("open"), // "open", "starting", "live", "completed"
   startTime: timestamp("start_time").notNull(),
   registrationDeadline: timestamp("registration_deadline").notNull(),
