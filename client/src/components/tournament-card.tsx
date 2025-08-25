@@ -47,19 +47,33 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2" data-testid={`tournament-card-${tournament.id}`}>
-      <div className={`bg-gradient-to-r ${getGradientColor(parseInt(tournament.id))} p-6`}>
-        <div className="flex justify-between items-start text-white">
-          <div>
-            <h3 className="text-lg font-semibold" data-testid={`text-tournament-name-${tournament.id}`}>
-              {tournament.name}
-            </h3>
-            <p className="text-sm opacity-90 capitalize">{tournament.type} Tournament</p>
-          </div>
-          <div className="text-right">
-            <div className="text-xl font-bold" data-testid={`text-prize-pool-${tournament.id}`}>
-              ₹{tournament.prizePool.toLocaleString()}
+      <div className="relative aspect-video overflow-hidden">
+        <img 
+          src={`/api/tournament-banner/${tournament.id}`}
+          alt={`${tournament.name} banner`}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            target.nextElementSibling?.classList.remove('hidden');
+          }}
+        />
+        <div className={`hidden absolute inset-0 bg-gradient-to-r ${getGradientColor(parseInt(tournament.id))}`}></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <div className="flex justify-between items-end text-white">
+            <div>
+              <h3 className="text-lg font-semibold" data-testid={`text-tournament-name-${tournament.id}`}>
+                {tournament.name}
+              </h3>
+              <p className="text-sm opacity-90 capitalize">{tournament.type} Tournament</p>
             </div>
-            <div className="text-xs opacity-90">Prize Pool</div>
+            <div className="text-right">
+              <div className="text-xl font-bold" data-testid={`text-prize-pool-${tournament.id}`}>
+                ₹{tournament.prizePool.toLocaleString()}
+              </div>
+              <div className="text-xs opacity-90">Prize Pool</div>
+            </div>
           </div>
         </div>
       </div>

@@ -119,6 +119,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Tournament banner endpoint
+  app.get("/api/tournament-banner/:id", async (req, res) => {
+    try {
+      const tournamentId = req.params.id;
+      
+      // Define banner mappings based on tournament characteristics
+      const bannerImages = [
+        "attached_assets/generated_images/Free_Fire_tournament_banner_e86d45aa.png",
+        "attached_assets/generated_images/Cyberpunk_esports_tournament_banner_f9c856c1.png",
+        "attached_assets/generated_images/Battle_royale_tournament_banner_e3dc8650.png"
+      ];
+      
+      // Use hash of tournament ID to consistently select the same banner for each tournament
+      const hash = tournamentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const selectedBanner = bannerImages[hash % bannerImages.length];
+      
+      res.sendFile(selectedBanner, { root: process.cwd() });
+    } catch (error) {
+      console.error('Error serving tournament banner:', error);
+      res.status(404).json({ message: "Banner not found" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

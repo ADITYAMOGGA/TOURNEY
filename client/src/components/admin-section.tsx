@@ -105,7 +105,7 @@ export default function AdminSection() {
                 </CardContent>
               </Card>
             ))
-          ) : (
+          ) : myTournaments.length === 0 ? (
             <div className="col-span-full text-center py-16">
               <div className="max-w-md mx-auto">
                 <Link href="/create-tournament">
@@ -125,6 +125,65 @@ export default function AdminSection() {
                 </Link>
               </div>
             </div>
+          ) : (
+            myTournaments.map((tournament) => (
+              <Card key={tournament.id} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary-orange">
+                <div className="aspect-video bg-gradient-to-r from-primary-orange to-secondary-orange rounded-t-lg relative overflow-hidden">
+                  <img 
+                    src={`/api/tournament-banner/${tournament.id}`}
+                    alt={`${tournament.name} banner`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="hidden absolute inset-0 bg-gradient-to-r from-primary-orange to-secondary-orange flex items-center justify-center">
+                    <Trophy className="w-12 h-12 text-white" />
+                  </div>
+                </div>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-lg group-hover:text-primary-orange transition-colors">
+                      {tournament.name}
+                    </CardTitle>
+                    <Badge variant="secondary" className="bg-green-100 text-green-800">
+                      {tournament.status}
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-sm text-gray-600">
+                    {tournament.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between text-sm">
+                    <span className="flex items-center">
+                      <Users className="w-4 h-4 mr-1 text-primary-orange" />
+                      {tournament.registeredPlayers}/{tournament.slots}
+                    </span>
+                    <span className="flex items-center">
+                      <Trophy className="w-4 h-4 mr-1 text-primary-orange" />
+                      ₹{tournament.prizePool.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    {new Date(tournament.startTime).toLocaleDateString()}
+                  </div>
+                  <div className="flex gap-2">
+                    <Link href={`/tournament-details/${tournament.id}`} className="flex-1">
+                      <Button variant="outline" className="w-full">
+                        View Details
+                      </Button>
+                    </Link>
+                    <Button variant="outline" size="icon">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
           )}
         </div>
       </div>
