@@ -40,18 +40,18 @@ export default function Settings() {
       <Nav />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-dark-bg mb-2">
-            Settings
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-dark-bg font-mono mb-4">
+            SETTINGS
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg text-gray-600">
             Manage your account preferences and settings
           </p>
         </div>
 
         <div className="space-y-6">
           {/* Profile Settings */}
-          <Card>
+          <Card className="border-2 border-black">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <User className="w-5 h-5 text-orange-500" />
@@ -85,7 +85,7 @@ export default function Settings() {
           </Card>
 
           {/* Security Settings */}
-          <Card>
+          <Card className="border-2 border-black">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-orange-500" />
@@ -119,7 +119,7 @@ export default function Settings() {
           </Card>
 
           {/* Notification Settings */}
-          <Card>
+          <Card className="border-2 border-black">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Bell className="w-5 h-5 text-orange-500" />
@@ -153,7 +153,7 @@ export default function Settings() {
           </Card>
 
           {/* Danger Zone */}
-          <Card className="border-red-200">
+          <Card className="border-2 border-red-500">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Trash2 className="w-5 h-5 text-red-500" />

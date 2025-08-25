@@ -152,7 +152,7 @@ export default function TournamentDetails() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="border-2 border-black">
               <CardHeader>
                 <CardTitle>Tournament Information</CardTitle>
               </CardHeader>
@@ -213,7 +213,7 @@ export default function TournamentDetails() {
             </Card>
 
             {registrations && registrations.length > 0 && (
-              <Card className="mt-8">
+              <Card className="mt-8 border-2 border-black">
                 <CardHeader>
                   <CardTitle>Registered Teams</CardTitle>
                 </CardHeader>
@@ -239,7 +239,7 @@ export default function TournamentDetails() {
           </div>
 
           <div>
-            <Card className="sticky top-24">
+            <Card className="sticky top-24 border-2 border-black">
               <CardHeader>
                 <CardTitle>Join Tournament</CardTitle>
               </CardHeader>
