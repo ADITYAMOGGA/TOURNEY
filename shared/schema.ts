@@ -30,14 +30,14 @@ export const tournaments = pgTable("tournaments", {
   status: text("status").notNull().default("open"), // "open", "starting", "live", "completed"
   startTime: timestamp("start_time").notNull(),
   registrationDeadline: timestamp("registration_deadline").notNull(),
-  organizerId: varchar("organizer_id").references(() => users.id).notNull(),
+  organizerId: varchar("organizer_id").notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
 export const tournamentRegistrations = pgTable("tournament_registrations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  tournamentId: varchar("tournament_id").references(() => tournaments.id).notNull(),
-  userId: varchar("user_id").references(() => users.id).notNull(),
+  tournamentId: varchar("tournament_id").notNull(),
+  userId: varchar("user_id").notNull(),
   teamName: text("team_name"),
   playerNames: text("player_names").array(),
   registeredAt: timestamp("registered_at").default(sql`now()`).notNull(),
