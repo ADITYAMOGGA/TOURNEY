@@ -17,6 +17,7 @@ import RoleSelection from "@/pages/role-selection";
 import Dashboard from "@/pages/dashboard";
 import Settings from "@/pages/settings";
 import Statistics from "@/pages/statistics";
+import Profile from "@/pages/profile";
 
 function AuthenticatedRouter() {
   const { user, loading } = useAuth();
@@ -29,7 +30,7 @@ function AuthenticatedRouter() {
         setLocation("/dashboard");
       }
       // If user is not logged in and trying to access protected routes, redirect to login
-      if (!user && ["/dashboard", "/create-tournament", "/settings", "/statistics"].includes(location)) {
+      if (!user && ["/dashboard", "/create-tournament", "/settings", "/statistics", "/profile"].includes(location)) {
         setLocation("/login");
       }
     }
@@ -73,6 +74,9 @@ function AuthenticatedRouter() {
         </Route>
         <Route path="/statistics">
           <AnimatedPage><Statistics /></AnimatedPage>
+        </Route>
+        <Route path="/profile">
+          <AnimatedPage><Profile /></AnimatedPage>
         </Route>
         <Route>
           <AnimatedPage><NotFound /></AnimatedPage>

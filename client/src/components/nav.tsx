@@ -87,6 +87,12 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center" data-testid="button-profile">
+                      <User className="w-4 h-4 mr-2" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/settings" className="flex items-center" data-testid="button-settings">
                       <Settings className="w-4 h-4 mr-2" />
                       Settings
