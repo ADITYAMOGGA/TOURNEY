@@ -21,13 +21,13 @@ export default function Hero() {
             
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link href="/tournaments">
-                <Button className="bg-black text-white px-8 py-4 text-lg font-bold hover:bg-gray-800 professional-transition font-mono border-2 border-black" data-testid="button-browse-tournaments">
+                <Button className="bg-black text-white px-8 py-4 text-lg font-bold hover:bg-gray-800 transition-all duration-200 font-mono border-2 border-black" data-testid="button-browse-tournaments">
                   <Trophy className="w-5 h-5 mr-2" />
                   BROWSE TOURNAMENTS
                 </Button>
               </Link>
               <Link href="/create-tournament">
-                <Button className="border-2 border-black text-black px-8 py-4 text-lg font-bold hover:bg-black hover:text-white professional-transition font-mono bg-white" data-testid="button-organize-tournament">
+                <Button className="border-2 border-black text-black px-8 py-4 text-lg font-bold hover:bg-black hover:text-white transition-all duration-200 font-mono bg-white" data-testid="button-organize-tournament">
                   <Plus className="w-5 h-5 mr-2" />
                   ORGANIZE TOURNAMENT
                 </Button>

@@ -58,7 +58,7 @@ export default function Footer() {
               {socialLinks.map((social) => (
                 <Button
                   key={social.icon}
-                  className="text-gray-400 hover:text-black bg-transparent border-none p-2 professional-transition"
+                  className="text-gray-400 hover:text-black bg-transparent border-none p-2 transition-colors duration-200"
                   data-testid={`button-social-${social.icon}`}
                 >
                   <span className="sr-only">{social.label}</span>
@@ -76,12 +76,12 @@ export default function Footer() {
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href}>
-                      <a 
-                        className="hover:text-primary-orange transition-colors"
+                      <span 
+                        className="hover:text-primary-orange transition-colors cursor-pointer"
                         data-testid={`link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
                       >
                         {link.label}
-                      </a>
+                      </span>
                     </Link>
                   </li>
                 ))}

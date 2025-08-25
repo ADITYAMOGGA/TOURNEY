@@ -55,12 +55,12 @@ export default function PublicSection() {
           </div>
           <div className="flex flex-col gap-4">
             <Link href="/tournaments">
-              <Button className="w-full bg-white text-black hover:bg-gray-200 font-mono font-bold py-4 border-2 border-white professional-transition" data-testid="button-browse-all">
+              <Button className="w-full bg-white text-black hover:bg-gray-200 font-mono font-bold py-4 border-2 border-white transition-all duration-200" data-testid="button-browse-all">
                 <Trophy className="w-5 h-5 mr-2" />
                 BROWSE ALL TOURNAMENTS
               </Button>
             </Link>
-            <Button variant="outline" className="w-full border-2 border-white text-white hover:bg-white hover:text-black font-mono font-bold py-4 professional-transition" data-testid="button-join-community">
+            <Button variant="outline" className="w-full border-2 border-white text-white hover:bg-white hover:text-black font-mono font-bold py-4 transition-all duration-200" data-testid="button-join-community">
               <Users className="w-5 h-5 mr-2" />
               JOIN COMMUNITY
             </Button>
@@ -147,7 +147,7 @@ export default function PublicSection() {
           <h3 className="text-2xl font-mono font-bold uppercase tracking-tight">AVAILABLE.TOURNAMENTS</h3>
           <Button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 font-mono border-2 border-black bg-white text-black hover:bg-black hover:text-white professional-transition"
+            className="flex items-center gap-2 font-mono border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
             data-testid="toggle-filters"
           >
             <Filter className="w-4 h-4" />
@@ -176,7 +176,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setStatusFilter('all')}
                       data-testid="filter-status-all"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         statusFilter === 'all' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -188,7 +188,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setStatusFilter('open')}
                       data-testid="filter-status-open"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         statusFilter === 'open' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -200,7 +200,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setStatusFilter('starting')}
                       data-testid="filter-status-starting"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         statusFilter === 'starting' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -212,7 +212,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setStatusFilter('live')}
                       data-testid="filter-status-live"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         statusFilter === 'live' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -231,7 +231,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('all')}
                       data-testid="filter-gamemode-all"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'all' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -243,7 +243,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('br')}
                       data-testid="filter-gamemode-br"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'br' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -255,7 +255,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('cs')}
                       data-testid="filter-gamemode-cs"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'cs' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -267,7 +267,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('limited')}
                       data-testid="filter-gamemode-limited"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'limited' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -279,7 +279,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('unlimited')}
                       data-testid="filter-gamemode-unlimited"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'unlimited' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -291,7 +291,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('contra')}
                       data-testid="filter-gamemode-contra"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'contra' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -303,7 +303,7 @@ export default function PublicSection() {
                       size="sm"
                       onClick={() => setGameModeFilter('statewar')}
                       data-testid="filter-gamemode-statewar"
-                      className={`font-mono border-2 border-black professional-transition ${
+                      className={`font-mono border-2 border-black transition-all duration-200 ${
                         gameModeFilter === 'statewar' 
                           ? 'bg-black text-white' 
                           : 'bg-white text-black hover:bg-black hover:text-white'
@@ -324,7 +324,7 @@ export default function PublicSection() {
                         setGameModeFilter('all')
                       }}
                       data-testid="clear-filters"
-                      className="font-mono font-bold text-black hover:bg-black hover:text-white border-2 border-black bg-white professional-transition"
+                      className="font-mono font-bold text-black hover:bg-black hover:text-white border-2 border-black bg-white transition-all duration-200"
                     >
                       CLEAR ALL
                     </Button>
