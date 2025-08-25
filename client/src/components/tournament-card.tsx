@@ -83,7 +83,7 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
               Players
             </span>
             <span className="font-medium" data-testid={`text-players-${tournament.id}`}>
-              {tournament.registeredPlayers} / {tournament.maxPlayers}
+              {tournament.registeredPlayers} / {tournament.slots}
             </span>
           </div>
           <div className="flex justify-between text-sm">
@@ -92,7 +92,7 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
               Entry Fee
             </span>
             <span className="font-medium" data-testid={`text-entry-fee-${tournament.id}`}>
-              ₹{tournament.entryFee}
+              ₹{tournament.slotPrice}
             </span>
           </div>
           <div className="flex justify-between text-sm">
