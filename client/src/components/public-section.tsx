@@ -3,361 +3,288 @@ import { Tournament } from "@shared/schema"
 import { Link } from "wouter"
 import TournamentCard from "./tournament-card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Trophy, Users, Calendar, Filter } from "lucide-react"
-import { useState } from "react"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Trophy, Users, Calendar, Search, Filter, Play, Star } from "lucide-react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { format } from "date-fns"
 
 export default function PublicSection() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'starting' | 'live'>('all')
   const [gameModeFilter, setGameModeFilter] = useState<'all' | 'br' | 'cs' | 'limited' | 'unlimited' | 'contra' | 'statewar'>('all')
+  const [searchQuery, setSearchQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   
   const { data: tournaments, isLoading } = useQuery<Tournament[]>({
     queryKey: ["/api/tournaments"],
   })
 
-  const filteredTournaments = tournaments?.filter(tournament => {
-    // Status filter
-    const statusMatch = statusFilter === 'all' || tournament.status === statusFilter
-    
-    // Game mode filter
-    let gameModeMatch = true
-    if (gameModeFilter === 'br') {
-      gameModeMatch = tournament.gameMode === 'BR'
-    } else if (gameModeFilter === 'cs') {
-      gameModeMatch = tournament.gameMode === 'CS'
-    } else if (gameModeFilter === 'limited') {
-      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Limited'
-    } else if (gameModeFilter === 'unlimited') {
-      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Unlimited'
-    } else if (gameModeFilter === 'contra') {
-      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Contra'
-    } else if (gameModeFilter === 'statewar') {
-      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'StateWar'
-    }
-    
-    return statusMatch && gameModeMatch
-  }) || []
+  const featuredTournaments = useMemo(() => {
+    return tournaments?.filter(t => t.prizePool > 10000).slice(0, 5) || []
+  }, [tournaments])
 
-  return (
-    <div className="space-y-8">
-      <div className="bg-black text-white p-12 border-2 border-gray-300 grid-pattern">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div>
-            <h2 className="text-4xl font-bold mb-4 font-mono tracking-tight">TOURNAMENT.BROWSER</h2>
-            <div className="h-1 w-20 bg-primary-orange mb-6"></div>
-            <p className="text-lg text-gray-300 mb-8 font-mono">
-              Discover competitive gaming tournaments.<br/>
-              Join the battle. Claim victory.
-            </p>
+  const filteredTournaments = useMemo(() => {
+    return tournaments?.filter(tournament => {
+      // Search filter
+      const searchMatch = !searchQuery || 
+        tournament.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tournament.description?.toLowerCase().includes(searchQuery.toLowerCase())
+
+      // Status filter
+      const statusMatch = statusFilter === 'all' || tournament.status === statusFilter
+      
+      // Game mode filter
+      let gameModeMatch = true
+      if (gameModeFilter === 'br') {
+        gameModeMatch = tournament.gameMode === 'BR'
+      } else if (gameModeFilter === 'cs') {
+        gameModeMatch = tournament.gameMode === 'CS'
+      } else if (gameModeFilter === 'limited') {
+        gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Limited'
+      } else if (gameModeFilter === 'unlimited') {
+        gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Unlimited'
+      } else if (gameModeFilter === 'contra') {
+        gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Contra'
+      } else if (gameModeFilter === 'statewar') {
+        gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'StateWar'
+      }
+      
+      return searchMatch && statusMatch && gameModeMatch
+    }) || []
+  }, [tournaments, searchQuery, statusFilter, gameModeFilter])
+
+  const FeaturedTournamentCard = ({ tournament }: { tournament: Tournament }) => (
+    <div className="relative w-full h-[500px] overflow-hidden bg-black">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(/api/tournament-banner/${tournament.id})`
+        }}
+      />
+      
+      {/* Overlay Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+      
+      {/* Content */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="max-w-2xl px-12 text-white">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="bg-primary-orange px-3 py-1 text-xs font-bold uppercase tracking-wider">
+              FEATURED
+            </span>
+            <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+              tournament.status === 'open' ? 'bg-green-500' :
+              tournament.status === 'starting' ? 'bg-yellow-500 text-black' :
+              tournament.status === 'live' ? 'bg-red-500' : 'bg-gray-500'
+            }`}>
+              {tournament.status}
+            </span>
           </div>
-          <div className="flex flex-col gap-4">
-            <Link href="/tournaments">
-              <Button className="w-full bg-white text-black hover:bg-gray-200 font-mono font-bold py-4 border-2 border-white transition-all duration-200" data-testid="button-browse-all">
-                <Trophy className="w-5 h-5 mr-2" />
-                BROWSE ALL TOURNAMENTS
+          
+          <h2 className="text-5xl font-bold mb-4 font-mono tracking-tight">
+            {tournament.name}
+          </h2>
+          
+          <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-lg">
+            {tournament.description || "Join the ultimate gaming tournament and compete for massive prizes!"}
+          </p>
+          
+          <div className="flex items-center gap-8 mb-8 text-lg">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-6 h-6 text-primary-orange" />
+              <span className="font-bold">${tournament.prizePool.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-6 h-6 text-primary-orange" />
+              <span>{tournament.registeredPlayers}/{tournament.slots}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-primary-orange" />
+              <span>{format(tournament.startTime, 'MMM dd, HH:mm')}</span>
+            </div>
+          </div>
+          
+          <div className="flex gap-4">
+            <Link href={`/tournament/${tournament.id}`}>
+              <Button className="bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg font-bold transition-all duration-200">
+                <Play className="w-5 h-5 mr-2" />
+                JOIN NOW
               </Button>
             </Link>
-            <Button variant="outline" className="w-full border-2 border-white text-white hover:bg-white hover:text-black font-mono font-bold py-4 transition-all duration-200" data-testid="button-join-community">
-              <Users className="w-5 h-5 mr-2" />
-              JOIN COMMUNITY
+            <Link href={`/tournament/${tournament.id}`}>
+              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg font-bold transition-all duration-200">
+                <Star className="w-5 h-5 mr-2" />
+                VIEW DETAILS
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="space-y-12">
+      {/* Featured Tournaments Carousel */}
+      {!isLoading && featuredTournaments.length > 0 && (
+        <section>
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            <CarouselContent>
+              {featuredTournaments.map((tournament) => (
+                <CarouselItem key={tournament.id}>
+                  <FeaturedTournamentCard tournament={tournament} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
+        </section>
+      )}
+
+      {/* Search and Filters Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-3xl font-bold mb-2 font-mono">DISCOVER TOURNAMENTS</h3>
+            <p className="text-gray-600">Find the perfect tournament to showcase your skills</p>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search tournaments..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 py-3 text-lg border-2 border-black focus:border-primary-orange"
+                data-testid="input-search-tournaments"
+              />
+            </div>
+            
+            <Button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2 font-mono border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200 px-6 py-3"
+              data-testid="toggle-filters"
+            >
+              <Filter className="w-5 h-5" />
+              FILTERS
+              {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
+                <span className="w-2 h-2 bg-primary-orange rounded-full"></span>
+              )}
             </Button>
           </div>
-        </div>
-      </div>
 
-      <div className="section-grid">
-        <div className="grid-cell">
-          <div className="flex items-center justify-between mb-4">
-            <Trophy className="h-8 w-8" />
-            <div className="text-right">
-              <div className="text-3xl font-mono font-bold">
-                {tournaments?.filter(t => t.status === 'live').length || 0}
-              </div>
-              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
-                LIVE NOW
-              </div>
-            </div>
-          </div>
-          <div className="h-px bg-border"></div>
-          <div className="mt-4 text-sm text-gray-600 font-mono">
-            CURRENTLY RUNNING
-          </div>
-        </div>
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="p-6 bg-white border-2 border-black"
+              >
+                <div className="flex flex-col gap-6">
+                  {/* Status Filters */}
+                  <div>
+                    <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">STATUS</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { key: 'all', label: 'ALL STATUS' },
+                        { key: 'open', label: 'OPEN' },
+                        { key: 'starting', label: 'STARTING' },
+                        { key: 'live', label: 'LIVE' }
+                      ].map(({ key, label }) => (
+                        <Button
+                          key={key}
+                          size="sm"
+                          onClick={() => setStatusFilter(key as any)}
+                          className={`font-mono border-2 border-black transition-all duration-200 ${
+                            statusFilter === key 
+                              ? 'bg-black text-white' 
+                              : 'bg-white text-black hover:bg-black hover:text-white'
+                          }`}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Game Mode Filters */}
+                  <div>
+                    <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">GAME MODE</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { key: 'all', label: 'ALL GAMES' },
+                        { key: 'br', label: 'BR FULL MAP' },
+                        { key: 'cs', label: 'CLASH SQUAD' },
+                        { key: 'limited', label: 'LIMITED' },
+                        { key: 'unlimited', label: 'UNLIMITED' },
+                        { key: 'contra', label: 'CONTRA' },
+                        { key: 'statewar', label: 'STATEWAR' }
+                      ].map(({ key, label }) => (
+                        <Button
+                          key={key}
+                          size="sm"
+                          onClick={() => setGameModeFilter(key as any)}
+                          className={`font-mono border-2 border-black transition-all duration-200 ${
+                            gameModeFilter === key 
+                              ? 'bg-black text-white' 
+                              : 'bg-white text-black hover:bg-black hover:text-white'
+                          }`}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
 
-        <div className="grid-cell">
-          <div className="flex items-center justify-between mb-4">
-            <Users className="h-8 w-8" />
-            <div className="text-right">
-              <div className="text-3xl font-mono font-bold">
-                {tournaments?.filter(t => t.status === 'open').length || 0}
-              </div>
-              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
-                OPEN REG
-              </div>
-            </div>
-          </div>
-          <div className="h-px bg-border"></div>
-          <div className="mt-4 text-sm text-gray-600 font-mono">
-            AVAILABLE TO JOIN
-          </div>
-        </div>
-
-        <div className="grid-cell">
-          <div className="flex items-center justify-between mb-4">
-            <Calendar className="h-8 w-8" />
-            <div className="text-right">
-              <div className="text-3xl font-mono font-bold">
-                {tournaments?.filter(t => t.status === 'starting').length || 0}
-              </div>
-              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
-                STARTING
-              </div>
-            </div>
-          </div>
-          <div className="h-px bg-border"></div>
-          <div className="mt-4 text-sm text-gray-600 font-mono">
-            BEGINNING SHORTLY
-          </div>
-        </div>
-
-        <div className="grid-cell">
-          <div className="flex items-center justify-between mb-4">
-            <Trophy className="h-8 w-8" />
-            <div className="text-right">
-              <div className="text-3xl font-mono font-bold">
-                ${tournaments?.reduce((sum, t) => sum + t.prizePool, 0).toLocaleString() || 0}
-              </div>
-              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
-                TOTAL POOL
-              </div>
-            </div>
-          </div>
-          <div className="h-px bg-border"></div>
-          <div className="mt-4 text-sm text-gray-600 font-mono">
-            ACROSS ALL TOURNAMENTS
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-          <h3 className="text-2xl font-mono font-bold uppercase tracking-tight">AVAILABLE.TOURNAMENTS</h3>
-          <Button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 font-mono border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
-            data-testid="toggle-filters"
-          >
-            <Filter className="w-4 h-4" />
-            FILTERS
-            {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
-              <span className="w-2 h-2 bg-red-500"></span>
+                  {/* Clear Filters */}
+                  {(statusFilter !== 'all' || gameModeFilter !== 'all' || searchQuery) && (
+                    <div className="pt-2 border-t">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setStatusFilter('all')
+                          setGameModeFilter('all')
+                          setSearchQuery('')
+                        }}
+                        className="font-mono font-bold text-black hover:bg-black hover:text-white border-2 border-black bg-white transition-all duration-200"
+                      >
+                        CLEAR ALL
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             )}
-          </Button>
+          </AnimatePresence>
         </div>
+      </section>
 
-        <AnimatePresence>
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mb-6 p-6 bg-white border-2 border-black"
-            >
-              <div className="flex flex-col gap-4">
-                {/* Status Filters */}
-                <div>
-                  <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">STATUS</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => setStatusFilter('all')}
-                      data-testid="filter-status-all"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        statusFilter === 'all' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      ALL STATUS
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setStatusFilter('open')}
-                      data-testid="filter-status-open"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        statusFilter === 'open' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      OPEN
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setStatusFilter('starting')}
-                      data-testid="filter-status-starting"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        statusFilter === 'starting' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      STARTING
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setStatusFilter('live')}
-                      data-testid="filter-status-live"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        statusFilter === 'live' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      LIVE
-                    </Button>
-                  </div>
-                </div>
-                
-                {/* Game Mode Filters */}
-                <div>
-                  <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">GAME MODE</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('all')}
-                      data-testid="filter-gamemode-all"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'all' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      ALL GAMES
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('br')}
-                      data-testid="filter-gamemode-br"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'br' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      BR FULL MAP
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('cs')}
-                      data-testid="filter-gamemode-cs"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'cs' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      CLASH SQUAD
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('limited')}
-                      data-testid="filter-gamemode-limited"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'limited' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      LIMITED
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('unlimited')}
-                      data-testid="filter-gamemode-unlimited"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'unlimited' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      UNLIMITED
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('contra')}
-                      data-testid="filter-gamemode-contra"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'contra' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      CONTRA
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setGameModeFilter('statewar')}
-                      data-testid="filter-gamemode-statewar"
-                      className={`font-mono border-2 border-black transition-all duration-200 ${
-                        gameModeFilter === 'statewar' 
-                          ? 'bg-black text-white' 
-                          : 'bg-white text-black hover:bg-black hover:text-white'
-                      }`}
-                    >
-                      STATEWAR
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Clear Filters */}
-                {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
-                  <div className="pt-2 border-t">
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        setStatusFilter('all')
-                        setGameModeFilter('all')
-                      }}
-                      data-testid="clear-filters"
-                      className="font-mono font-bold text-black hover:bg-black hover:text-white border-2 border-black bg-white transition-all duration-200"
-                    >
-                      CLEAR ALL
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+      {/* Tournaments Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           layout
         >
           <AnimatePresence mode="wait">
             {isLoading ? (
-              Array.from({ length: 3 }).map((_, i) => (
+              Array.from({ length: 6 }).map((_, i) => (
                 <motion.div
                   key={`skeleton-${i}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <Card className="overflow-hidden">
-                    <div className="h-24 bg-gray-200">
-                      <Skeleton className="w-full h-full" />
-                    </div>
-                    <CardContent className="p-6">
-                      <Skeleton className="h-4 w-3/4 mb-2" />
-                      <Skeleton className="h-4 w-1/2 mb-4" />
-                      <Skeleton className="h-10 w-full mt-6" />
-                    </CardContent>
-                  </Card>
+                  <div className="h-96 bg-gray-200 animate-pulse border-2">
+                    <Skeleton className="w-full h-full" />
+                  </div>
                 </motion.div>
               ))
             ) : filteredTournaments.length === 0 ? (
@@ -371,7 +298,7 @@ export default function PublicSection() {
               >
                 <div className="max-w-md mx-auto">
                   <motion.div 
-                    className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+                    className="w-32 h-32 bg-gray-100 border-2 border-black flex items-center justify-center mx-auto mb-6"
                     animate={{ 
                       rotate: [0, 5, -5, 0],
                       scale: [1, 1.05, 1] 
@@ -384,17 +311,28 @@ export default function PublicSection() {
                   >
                     <Trophy className="w-16 h-16 text-gray-400" />
                   </motion.div>
-                  <h4 className="text-2xl font-bold text-gray-900 mb-4">No Tournaments Yet</h4>
+                  <h4 className="text-2xl font-bold text-gray-900 mb-4 font-mono">NO TOURNAMENTS FOUND</h4>
                   <p className="text-gray-600 mb-8 text-lg">
-                    Be the first to discover amazing tournaments! Check back soon or create your own.
+                    {searchQuery || statusFilter !== 'all' || gameModeFilter !== 'all' 
+                      ? "Try adjusting your filters or search terms"
+                      : "New tournaments are added regularly. Check back soon!"}
                   </p>
-                  <div className="text-center text-gray-500">
-                    <p className="text-sm">Organizers can create tournaments to get started</p>
-                  </div>
+                  {(searchQuery || statusFilter !== 'all' || gameModeFilter !== 'all') && (
+                    <Button
+                      onClick={() => {
+                        setSearchQuery('')
+                        setStatusFilter('all')
+                        setGameModeFilter('all')
+                      }}
+                      className="bg-black text-white hover:bg-gray-800 font-mono"
+                    >
+                      CLEAR FILTERS
+                    </Button>
+                  )}
                 </div>
               </motion.div>
             ) : (
-              filteredTournaments.slice(0, 6).map((tournament, index) => (
+              filteredTournaments.map((tournament, index) => (
                 <motion.div
                   key={tournament.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -412,17 +350,7 @@ export default function PublicSection() {
             )}
           </AnimatePresence>
         </motion.div>
-
-        {filteredTournaments.length > 0 && (
-          <div className="text-center mt-8">
-            <Link href="/tournaments">
-              <Button variant="outline" className="px-8" data-testid="button-view-more-tournaments">
-                View More Tournaments
-              </Button>
-            </Link>
-          </div>
-        )}
-      </div>
+      </section>
     </div>
   )
 }

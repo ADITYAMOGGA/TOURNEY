@@ -92,6 +92,12 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                       Settings
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/statistics" className="flex items-center" data-testid="button-statistics">
+                      <Trophy className="w-4 h-4 mr-2" />
+                      Statistics
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} data-testid="button-sign-out">
                     <LogOut className="w-4 h-4 mr-2" />
