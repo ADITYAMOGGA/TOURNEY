@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Trophy, Users, Calendar, Filter } from "lucide-react"
 import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function PublicSection() {
   const [filter, setFilter] = useState<'all' | 'open' | 'starting' | 'live'>('all')
@@ -33,12 +34,10 @@ export default function PublicSection() {
               Browse All Tournaments
             </Button>
           </Link>
-          <Link href="/my-registrations">
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 transition-all duration-200 opacity-100" data-testid="button-my-registrations">
-              <Users className="w-5 h-5 mr-2" />
-              My Registrations
-            </Button>
-          </Link>
+          <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 transition-all duration-200" data-testid="button-join-community">
+            <Users className="w-5 h-5 mr-2" />
+            Join Community
+          </Button>
         </div>
       </div>
 
@@ -135,37 +134,83 @@ export default function PublicSection() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <Card key={i} className="overflow-hidden">
-                <div className="h-24 bg-gray-200">
-                  <Skeleton className="w-full h-full" />
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          layout
+        >
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <motion.div
+                  key={`skeleton-${i}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <Card className="overflow-hidden">
+                    <div className="h-24 bg-gray-200">
+                      <Skeleton className="w-full h-full" />
+                    </div>
+                    <CardContent className="p-6">
+                      <Skeleton className="h-4 w-3/4 mb-2" />
+                      <Skeleton className="h-4 w-1/2 mb-4" />
+                      <Skeleton className="h-10 w-full mt-6" />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            ) : filteredTournaments.length === 0 ? (
+              <motion.div 
+                key="no-tournaments"
+                className="col-span-full text-center py-16"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="max-w-md mx-auto">
+                  <motion.div 
+                    className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+                    animate={{ 
+                      rotate: [0, 5, -5, 0],
+                      scale: [1, 1.05, 1] 
+                    }}
+                    transition={{ 
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                  >
+                    <Trophy className="w-16 h-16 text-gray-400" />
+                  </motion.div>
+                  <h4 className="text-2xl font-bold text-gray-900 mb-4">No Tournaments Yet</h4>
+                  <p className="text-gray-600 mb-8 text-lg">
+                    Be the first to discover amazing tournaments! Check back soon or create your own.
+                  </p>
+                  <div className="text-center text-gray-500">
+                    <p className="text-sm">Organizers can create tournaments to get started</p>
+                  </div>
                 </div>
-                <CardContent className="p-6">
-                  <Skeleton className="h-4 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/2 mb-4" />
-                  <Skeleton className="h-10 w-full mt-6" />
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-16">
-              <div className="max-w-md mx-auto">
-                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Trophy className="w-16 h-16 text-gray-400" />
-                </div>
-                <h4 className="text-2xl font-bold text-gray-900 mb-4">No Tournaments Yet</h4>
-                <p className="text-gray-600 mb-8 text-lg">
-                  Be the first to discover amazing tournaments! Check back soon or create your own.
-                </p>
-                <div className="text-center text-gray-500">
-                  <p className="text-sm">Organizers can create tournaments to get started</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+              </motion.div>
+            ) : (
+              filteredTournaments.slice(0, 6).map((tournament, index) => (
+                <motion.div
+                  key={tournament.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ 
+                    duration: 0.3,
+                    delay: index * 0.1 
+                  }}
+                  layout
+                >
+                  <TournamentCard tournament={tournament} />
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </motion.div>
 
         {filteredTournaments.length > 0 && (
           <div className="text-center mt-8">

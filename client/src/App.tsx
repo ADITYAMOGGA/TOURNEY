@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
+import AnimatedPage from "@/components/animated-page";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Tournaments from "@/pages/tournaments";
@@ -42,17 +44,37 @@ function AuthenticatedRouter() {
   }
 
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/tournaments" component={Tournaments} />
-      <Route path="/create-tournament" component={CreateTournament} />
-      <Route path="/tournament/:id" component={TournamentDetails} />
-      <Route path="/login" component={Login} />
-      <Route path="/role-selection" component={RoleSelection} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/settings" component={Settings} />
-      <Route component={NotFound} />
-    </Switch>
+    <AnimatePresence mode="wait" initial={false}>
+      <Switch key={location}>
+        <Route path="/">
+          <AnimatedPage><Home /></AnimatedPage>
+        </Route>
+        <Route path="/tournaments">
+          <AnimatedPage><Tournaments /></AnimatedPage>
+        </Route>
+        <Route path="/create-tournament">
+          <AnimatedPage><CreateTournament /></AnimatedPage>
+        </Route>
+        <Route path="/tournament/:id">
+          <AnimatedPage><TournamentDetails /></AnimatedPage>
+        </Route>
+        <Route path="/login">
+          <AnimatedPage><Login /></AnimatedPage>
+        </Route>
+        <Route path="/role-selection">
+          <AnimatedPage><RoleSelection /></AnimatedPage>
+        </Route>
+        <Route path="/dashboard">
+          <AnimatedPage><Dashboard /></AnimatedPage>
+        </Route>
+        <Route path="/settings">
+          <AnimatedPage><Settings /></AnimatedPage>
+        </Route>
+        <Route>
+          <AnimatedPage><NotFound /></AnimatedPage>
+        </Route>
+      </Switch>
+    </AnimatePresence>
   );
 }
 

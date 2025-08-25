@@ -174,7 +174,7 @@ export default function TournamentDetails() {
                     <div>
                       <div className="font-medium">Players</div>
                       <div className="text-sm text-gray-600" data-testid="text-player-count">
-                        {tournament.registeredPlayers} / {tournament.maxPlayers}
+                        {tournament.registeredPlayers} / {tournament.slots}
                       </div>
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export default function TournamentDetails() {
                     <div>
                       <div className="font-medium">Entry Fee</div>
                       <div className="text-sm text-gray-600" data-testid="text-entry-fee">
-                        ₹{tournament.entryFee}
+                        ₹{tournament.slotPrice}
                       </div>
                     </div>
                   </div>
@@ -256,12 +256,12 @@ export default function TournamentDetails() {
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Entry Fee</span>
-                        <span className="font-medium">₹{tournament.entryFee}</span>
+                        <span className="font-medium">₹{tournament.slotPrice}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Available Slots</span>
                         <span className="font-medium">
-                          {tournament.maxPlayers - tournament.registeredPlayers}
+                          {tournament.slots - tournament.registeredPlayers}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -275,14 +275,14 @@ export default function TournamentDetails() {
                       onClick={() => joinTournamentMutation.mutate()}
                       disabled={
                         joinTournamentMutation.isPending ||
-                        tournament.registeredPlayers >= tournament.maxPlayers
+                        tournament.registeredPlayers >= tournament.slots
                       }
                       data-testid="button-join-tournament"
                     >
                       {joinTournamentMutation.isPending ? "Joining..." : "Join Tournament"}
                     </Button>
 
-                    {tournament.registeredPlayers >= tournament.maxPlayers && (
+                    {tournament.registeredPlayers >= tournament.slots && (
                       <div className="text-center text-sm text-red-600 font-medium">
                         Tournament is full
                       </div>

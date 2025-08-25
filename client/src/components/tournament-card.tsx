@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, DollarSign } from "lucide-react";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -46,7 +47,15 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
   const minutesUntilStart = Math.max(0, Math.floor((timeUntilStart % (1000 * 60 * 60)) / (1000 * 60)));
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2" data-testid={`tournament-card-${tournament.id}`}>
+    <motion.div
+      whileHover={{ 
+        y: -8,
+        scale: 1.02,
+        transition: { duration: 0.2, ease: "easeOut" }
+      }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300" data-testid={`tournament-card-${tournament.id}`}>
       <div className="relative aspect-video overflow-hidden">
         <img 
           src={`/api/tournament-banner/${tournament.id}`}
@@ -63,15 +72,31 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <div className="flex justify-between items-end text-white">
             <div>
-              <h3 className="text-lg font-semibold" data-testid={`text-tournament-name-${tournament.id}`}>
+              <motion.h3 
+                className="text-lg font-semibold" 
+                data-testid={`text-tournament-name-${tournament.id}`}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
                 {tournament.name}
-              </h3>
+              </motion.h3>
               <p className="text-sm opacity-90 capitalize">{tournament.type} Tournament</p>
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold" data-testid={`text-prize-pool-${tournament.id}`}>
+              <motion.div 
+                className="text-xl font-bold" 
+                data-testid={`text-prize-pool-${tournament.id}`}
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
                 ₹{tournament.prizePool.toLocaleString()}
-              </div>
+              </motion.div>
               <div className="text-xs opacity-90">Prize Pool</div>
             </div>
           </div>
@@ -125,5 +150,6 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
         </Link>
       </CardContent>
     </Card>
+    </motion.div>
   );
 }
