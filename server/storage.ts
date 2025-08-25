@@ -8,15 +8,15 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
   throw new Error("SUPABASE_URL and SUPABASE_ANON_KEY are required");
 }
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is required");
-}
-
-// Create Supabase client for auth and realtime features (if needed)
+// Create Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// Use Replit's built-in PostgreSQL database
-const client = postgres(process.env.DATABASE_URL);
+// Extract connection details from Supabase URL for direct PostgreSQL connection
+const supabaseUrl = new URL(process.env.SUPABASE_URL);
+const projectRef = supabaseUrl.hostname.split('.')[0];
+const connectionString = `postgresql://postgres.${projectRef}:${process.env.SUPABASE_ANON_KEY}@aws-0-us-west-1.pooler.supabase.com:6543/postgres`;
+
+const client = postgres(connectionString);
 const db = drizzle(client);
 
 export interface IStorage {
