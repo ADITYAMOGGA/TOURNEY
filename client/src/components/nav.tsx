@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut, Trophy, Users } from "lucide-react";
+import { Menu, User, LogOut, Trophy, Users, LayoutDashboard, Settings } from "lucide-react";
 import garenaLogo from "@assets/garena_1756025529823.png";
 import tourneyLogo from "@assets/image_1756054912806.png";
 
@@ -80,7 +80,20 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                     {user.username || 'User'}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="flex items-center" data-testid="button-dashboard">
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="flex items-center" data-testid="button-settings">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} data-testid="button-sign-out">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
@@ -146,6 +159,28 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                         <div className="px-3 py-2 text-sm text-gray-600">
                           Welcome, {user.username || 'User'}
                         </div>
+                        <Link href="/dashboard">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-gray-600"
+                            onClick={() => setIsOpen(false)}
+                            data-testid="button-mobile-dashboard"
+                          >
+                            <LayoutDashboard className="w-4 h-4 mr-2" />
+                            Dashboard
+                          </Button>
+                        </Link>
+                        <Link href="/settings">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-gray-600"
+                            onClick={() => setIsOpen(false)}
+                            data-testid="button-mobile-settings"
+                          >
+                            <Settings className="w-4 h-4 mr-2" />
+                            Settings
+                          </Button>
+                        </Link>
                         <Button 
                           variant="ghost" 
                           className="w-full justify-start text-gray-600"

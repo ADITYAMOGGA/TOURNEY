@@ -13,6 +13,7 @@ import TournamentDetails from "@/pages/tournament-details";
 import Login from "@/pages/login";
 import RoleSelection from "@/pages/role-selection";
 import Dashboard from "@/pages/dashboard";
+import Settings from "@/pages/settings";
 
 function AuthenticatedRouter() {
   const { user, loading } = useAuth();
@@ -49,6 +50,7 @@ function AuthenticatedRouter() {
       <Route path="/login" component={Login} />
       <Route path="/role-selection" component={RoleSelection} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );
