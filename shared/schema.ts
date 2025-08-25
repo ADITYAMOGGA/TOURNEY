@@ -52,6 +52,9 @@ export const insertTournamentSchema = createInsertSchema(tournaments).omit({
   id: true,
   registeredPlayers: true,
   createdAt: true,
+}).extend({
+  startTime: z.string().transform((str) => new Date(str)),
+  registrationDeadline: z.string().transform((str) => new Date(str)),
 });
 
 export const insertTournamentRegistrationSchema = createInsertSchema(tournamentRegistrations).omit({

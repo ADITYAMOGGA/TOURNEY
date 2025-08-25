@@ -11,13 +11,13 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
 // Create Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// Extract connection details from Supabase URL for direct PostgreSQL connection
-const supabaseUrl = new URL(process.env.SUPABASE_URL);
-const projectRef = supabaseUrl.hostname.split('.')[0];
-const connectionString = `postgresql://postgres.${projectRef}:${process.env.SUPABASE_ANON_KEY}@aws-0-us-west-1.pooler.supabase.com:6543/postgres`;
+// For now, use Supabase client with mock database storage until connection is resolved
+const db = null; // We'll implement proper connection after you run the SQL queries
 
-const client = postgres(connectionString);
-const db = drizzle(client);
+// Mock storage implementation for development
+const mockTournaments: Tournament[] = [];
+const mockUsers: User[] = [];
+const mockRegistrations: TournamentRegistration[] = [];
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -38,63 +38,70 @@ export interface IStorage {
 
 export class DbStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.id, id));
-    return result[0];
+    // Use Supabase client for now
+    const { data } = await supabase.from('users').select('*').eq('id', id).single();
+    return data as User | undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.username, username));
-    return result[0];
+    const { data } = await supabase.from('users').select('*').eq('username', username).single();
+    return data as User | undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(insertUser).returning();
-    return result[0];
+    const { data } = await supabase.from('users').insert(insertUser).select().single();
+    return data as User;
   }
 
   async getTournament(id: string): Promise<Tournament | undefined> {
-    const result = await db.select().from(tournaments).where(eq(tournaments.id, id));
-    return result[0];
+    const { data } = await supabase.from('tournaments').select('*').eq('id', id).single();
+    return data as Tournament | undefined;
   }
 
   async getAllTournaments(): Promise<Tournament[]> {
-    return await db.select().from(tournaments);
+    const { data } = await supabase.from('tournaments').select('*').order('created_at', { ascending: false });
+    return (data as Tournament[]) || [];
   }
 
   async getTournamentsByStatus(status: string): Promise<Tournament[]> {
-    return await db.select().from(tournaments).where(eq(tournaments.status, status));
+    const { data } = await supabase.from('tournaments').select('*').eq('status', status).order('created_at', { ascending: false });
+    return (data as Tournament[]) || [];
   }
 
   async createTournament(insertTournament: InsertTournament): Promise<Tournament> {
-    const result = await db.insert(tournaments).values(insertTournament).returning();
-    return result[0];
+    const { data, error } = await supabase.from('tournaments').insert(insertTournament).select().single();
+    if (error) throw error;
+    return data as Tournament;
   }
 
   async updateTournament(id: string, updates: Partial<Tournament>): Promise<Tournament | undefined> {
-    const result = await db.update(tournaments).set(updates).where(eq(tournaments.id, id)).returning();
-    return result[0];
+    const { data } = await supabase.from('tournaments').update(updates).eq('id', id).select().single();
+    return data as Tournament | undefined;
   }
 
   async getTournamentRegistrations(tournamentId: string): Promise<TournamentRegistration[]> {
-    return await db.select().from(tournamentRegistrations).where(eq(tournamentRegistrations.tournamentId, tournamentId));
+    const { data } = await supabase.from('tournament_registrations').select('*').eq('tournament_id', tournamentId);
+    return (data as TournamentRegistration[]) || [];
   }
 
   async createTournamentRegistration(insertRegistration: InsertTournamentRegistration): Promise<TournamentRegistration> {
-    const result = await db.insert(tournamentRegistrations).values(insertRegistration).returning();
+    const { data, error } = await supabase.from('tournament_registrations').insert(insertRegistration).select().single();
+    if (error) throw error;
     
     // Update tournament registered players count
     const tournament = await this.getTournament(insertRegistration.tournamentId);
     if (tournament) {
-      await db.update(tournaments)
-        .set({ registeredPlayers: tournament.registeredPlayers + 1 })
-        .where(eq(tournaments.id, insertRegistration.tournamentId));
+      await supabase.from('tournaments')
+        .update({ registered_players: tournament.registeredPlayers + 1 })
+        .eq('id', insertRegistration.tournamentId);
     }
     
-    return result[0];
+    return data as TournamentRegistration;
   }
 
   async getUserTournamentRegistrations(userId: string): Promise<TournamentRegistration[]> {
-    return await db.select().from(tournamentRegistrations).where(eq(tournamentRegistrations.userId, userId));
+    const { data } = await supabase.from('tournament_registrations').select('*').eq('user_id', userId);
+    return (data as TournamentRegistration[]) || [];
   }
 }
 
