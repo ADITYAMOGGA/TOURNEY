@@ -60,7 +60,32 @@ export class DbStorage implements IStorage {
 
   async getAllTournaments(): Promise<Tournament[]> {
     const { data } = await supabase.from('tournaments').select('*').order('created_at', { ascending: false });
-    return (data as Tournament[]) || [];
+    if (!data) return [];
+    
+    // Transform snake_case to camelCase
+    return data.map(item => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      gameMode: item.game_mode,
+      type: item.type,
+      format: item.format,
+      prizePool: item.prize_pool,
+      slotPrice: item.slot_price,
+      slots: item.slots,
+      registeredPlayers: item.registered_players,
+      matchCount: item.match_count,
+      killPoints: item.kill_points,
+      positionPoints: item.position_points,
+      csGameVariant: item.cs_game_variant,
+      device: item.device,
+      rules: item.rules,
+      status: item.status,
+      startTime: item.start_time,
+      registrationDeadline: item.registration_deadline,
+      organizerId: item.organizer_id,
+      createdAt: item.created_at,
+    })) as Tournament[];
   }
 
   async getTournamentsByStatus(status: string): Promise<Tournament[]> {
@@ -69,9 +94,59 @@ export class DbStorage implements IStorage {
   }
 
   async createTournament(insertTournament: InsertTournament): Promise<Tournament> {
-    const { data, error } = await supabase.from('tournaments').insert(insertTournament).select().single();
-    if (error) throw error;
-    return data as Tournament;
+    // Transform camelCase to snake_case for Supabase
+    const transformedData = {
+      name: insertTournament.name,
+      description: insertTournament.description,
+      game_mode: insertTournament.gameMode,
+      type: insertTournament.type,
+      format: insertTournament.format,
+      prize_pool: insertTournament.prizePool,
+      slot_price: insertTournament.slotPrice,
+      slots: insertTournament.slots,
+      registered_players: 0, // Default value for new tournaments
+      match_count: insertTournament.matchCount,
+      kill_points: insertTournament.killPoints,
+      position_points: insertTournament.positionPoints,
+      cs_game_variant: insertTournament.csGameVariant,
+      device: insertTournament.device,
+      rules: insertTournament.rules,
+      status: insertTournament.status || 'open',
+      start_time: insertTournament.startTime,
+      registration_deadline: insertTournament.registrationDeadline,
+      organizer_id: insertTournament.organizerId,
+    };
+
+    const { data, error } = await supabase.from('tournaments').insert(transformedData).select().single();
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+    
+    // Transform back to camelCase for response
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      gameMode: data.game_mode,
+      type: data.type,
+      format: data.format,
+      prizePool: data.prize_pool,
+      slotPrice: data.slot_price,
+      slots: data.slots,
+      registeredPlayers: data.registered_players,
+      matchCount: data.match_count,
+      killPoints: data.kill_points,
+      positionPoints: data.position_points,
+      csGameVariant: data.cs_game_variant,
+      device: data.device,
+      rules: data.rules,
+      status: data.status,
+      startTime: data.start_time,
+      registrationDeadline: data.registration_deadline,
+      organizerId: data.organizer_id,
+      createdAt: data.created_at,
+    } as Tournament;
   }
 
   async updateTournament(id: string, updates: Partial<Tournament>): Promise<Tournament | undefined> {
