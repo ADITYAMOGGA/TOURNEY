@@ -43,8 +43,8 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
                 {tournament.gameMode === 'BR' ? 'BR' : 'CS'}
               </span>
             </div>
-            <div className="bg-white/90 backdrop-blur-sm border border-black/10 px-3 py-1">
-              <span className="text-xs font-mono font-medium text-black">
+            <div className="bg-white/90 backdrop-blur-sm border border-black/10 px-3 py-1 min-w-fit">
+              <span className="text-xs font-mono font-medium text-black whitespace-nowrap">
                 ${tournament.prizePool.toLocaleString()}
               </span>
             </div>

@@ -4,32 +4,32 @@ import { Trophy, Plus, Users, DollarSign, Calendar } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-br from-gray-50 to-white py-20 lg:py-32">
+    <section className="bg-white py-20 lg:py-32 border-b-2 border-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-dark-bg leading-tight">
-              Organize & Join
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-dark-bg leading-tight font-mono">
+              ORGANIZE & JOIN
               <span className="bg-gradient-to-r from-primary-orange to-secondary-orange bg-clip-text text-transparent">
-                {" "}Gaming{" "}
+                {" "}GAMING{" "}
               </span>
-              Tournaments
+              TOURNAMENTS
             </h1>
-            <p className="mt-6 text-xl text-gray-600 leading-relaxed">
+            <p className="mt-6 text-xl text-gray-600 leading-relaxed font-mono">
               The ultimate platform for gaming tournament organizers and players. Create tournaments, join competitions, and climb the leaderboards.
             </p>
             
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link href="/tournaments">
-                <Button className="gradient-primary text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-testid="button-browse-tournaments">
+                <Button className="bg-black text-white px-8 py-4 text-lg font-bold hover:bg-gray-800 professional-transition font-mono border-2 border-black" data-testid="button-browse-tournaments">
                   <Trophy className="w-5 h-5 mr-2" />
-                  Browse Tournaments
+                  BROWSE TOURNAMENTS
                 </Button>
               </Link>
               <Link href="/create-tournament">
-                <Button variant="outline" className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:border-primary-orange hover:text-primary-orange transition-all duration-300" data-testid="button-organize-tournament">
+                <Button className="border-2 border-black text-black px-8 py-4 text-lg font-bold hover:bg-black hover:text-white professional-transition font-mono bg-white" data-testid="button-organize-tournament">
                   <Plus className="w-5 h-5 mr-2" />
-                  Organize Tournament
+                  ORGANIZE TOURNAMENT
                 </Button>
               </Link>
             </div>
@@ -51,28 +51,28 @@ export default function Hero() {
           </div>
           
           <div className="relative">
-            <div className="gradient-dark rounded-2xl p-8 shadow-2xl">
-              <div className="gradient-primary rounded-xl p-6 mb-6">
+            <div className="bg-black border-2 border-gray-300 p-8">
+              <div className="bg-primary-orange p-6 mb-6 border-2 border-black">
                 <div className="flex items-center justify-between text-white">
                   <div>
-                    <h3 className="text-lg font-semibold">Featured Tournament</h3>
-                    <p className="text-sm opacity-90">Gaming Championship</p>
+                    <h3 className="text-lg font-bold font-mono">FEATURED TOURNAMENT</h3>
+                    <p className="text-sm opacity-90 font-mono">GAMING CHAMPIONSHIP</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold">₹50,000</div>
-                    <div className="text-sm opacity-90">Prize Pool</div>
+                    <div className="text-2xl font-bold font-mono">$50,000</div>
+                    <div className="text-sm opacity-90 font-mono">PRIZE POOL</div>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-4 text-white">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Registration</span>
-                  <span className="text-green-400 font-semibold">Open</span>
+                  <span className="text-gray-300 font-mono">REGISTRATION</span>
+                  <span className="text-green-400 font-bold font-mono">OPEN</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Players Joined</span>
-                  <span className="font-semibold">1,247 / 2,000</span>
+                  <span className="text-gray-300 font-mono">PLAYERS JOINED</span>
+                  <span className="font-bold font-mono">1,247 / 2,000</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300">Entry Fee</span>

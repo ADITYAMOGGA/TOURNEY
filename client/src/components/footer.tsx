@@ -41,7 +41,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200 py-12">
+    <footer className="bg-white border-t-2 border-black py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
@@ -58,14 +58,12 @@ export default function Footer() {
               {socialLinks.map((social) => (
                 <Button
                   key={social.icon}
-                  variant="ghost"
-                  size="icon"
-                  className="text-gray-400 hover:text-primary-orange"
+                  className="text-gray-400 hover:text-black bg-transparent border-none p-2 professional-transition"
                   data-testid={`button-social-${social.icon}`}
                 >
                   <span className="sr-only">{social.label}</span>
                   {/* Using text placeholder instead of actual icons for simplicity */}
-                  <span className="text-xl">{social.icon.charAt(0).toUpperCase()}</span>
+                  <span className="text-xl font-mono">{social.icon.charAt(0).toUpperCase()}</span>
                 </Button>
               ))}
             </div>

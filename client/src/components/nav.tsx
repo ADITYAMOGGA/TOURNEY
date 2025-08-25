@@ -72,8 +72,7 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
-                    variant="ghost" 
-                    className="text-gray-600 hover:text-primary-orange flex items-center gap-2"
+                    className="text-gray-600 hover:text-black flex items-center gap-2 font-medium professional-transition bg-transparent border-none"
                     data-testid="button-user-menu"
                   >
                     <User className="w-4 h-4" />
@@ -104,8 +103,7 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
               <>
                 <Link href="/login">
                   <Button 
-                    variant="ghost" 
-                    className="text-gray-600 hover:text-primary-orange"
+                    className="text-gray-600 hover:text-black font-medium professional-transition bg-transparent border-none"
                     data-testid="button-sign-in"
                   >
                     Sign In
@@ -123,7 +121,7 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" data-testid="button-mobile-menu">
+                <Button className="text-gray-600 hover:text-black professional-transition bg-transparent border-none p-2" data-testid="button-mobile-menu">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>

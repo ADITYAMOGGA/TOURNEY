@@ -146,15 +146,14 @@ export default function PublicSection() {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
           <h3 className="text-2xl font-mono font-bold uppercase tracking-tight">AVAILABLE.TOURNAMENTS</h3>
           <Button
-            variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 font-mono border-2 border-black bg-white text-black hover:bg-black hover:text-white professional-transition"
             data-testid="toggle-filters"
           >
             <Filter className="w-4 h-4" />
-            Filters
+            FILTERS
             {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
-              <span className="w-2 h-2 bg-primary-orange rounded-full"></span>
+              <span className="w-2 h-2 bg-red-500"></span>
             )}
           </Button>
         </div>
@@ -174,36 +173,52 @@ export default function PublicSection() {
                   <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">STATUS</h4>
                   <div className="flex flex-wrap gap-2">
                     <Button
-                      variant={statusFilter === 'all' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setStatusFilter('all')}
                       data-testid="filter-status-all"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        statusFilter === 'all' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      All Status
+                      ALL STATUS
                     </Button>
                     <Button
-                      variant={statusFilter === 'open' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setStatusFilter('open')}
                       data-testid="filter-status-open"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        statusFilter === 'open' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Open
+                      OPEN
                     </Button>
                     <Button
-                      variant={statusFilter === 'starting' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setStatusFilter('starting')}
                       data-testid="filter-status-starting"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        statusFilter === 'starting' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Starting
+                      STARTING
                     </Button>
                     <Button
-                      variant={statusFilter === 'live' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setStatusFilter('live')}
                       data-testid="filter-status-live"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        statusFilter === 'live' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Live
+                      LIVE
                     </Button>
                   </div>
                 </div>
@@ -213,67 +228,88 @@ export default function PublicSection() {
                   <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">GAME MODE</h4>
                   <div className="flex flex-wrap gap-2">
                     <Button
-                      variant={gameModeFilter === 'all' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('all')}
                       data-testid="filter-gamemode-all"
-                      className="bg-gradient-to-r from-primary-orange to-secondary-orange text-white hover:shadow-lg"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'all' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      All Games
+                      ALL GAMES
                     </Button>
                     <Button
-                      variant={gameModeFilter === 'br' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('br')}
                       data-testid="filter-gamemode-br"
-                      className="bg-green-500 text-white hover:bg-green-600"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'br' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      BR Full Map
+                      BR FULL MAP
                     </Button>
                     <Button
-                      variant={gameModeFilter === 'cs' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('cs')}
                       data-testid="filter-gamemode-cs"
-                      className="bg-blue-500 text-white hover:bg-blue-600"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'cs' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Clash Squad
+                      CLASH SQUAD
                     </Button>
                     <Button
-                      variant={gameModeFilter === 'limited' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('limited')}
                       data-testid="filter-gamemode-limited"
-                      className="bg-yellow-500 text-white hover:bg-yellow-600"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'limited' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Limited
+                      LIMITED
                     </Button>
                     <Button
-                      variant={gameModeFilter === 'unlimited' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('unlimited')}
                       data-testid="filter-gamemode-unlimited"
-                      className="bg-purple-500 text-white hover:bg-purple-600"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'unlimited' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Unlimited
+                      UNLIMITED
                     </Button>
                     <Button
-                      variant={gameModeFilter === 'contra' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('contra')}
                       data-testid="filter-gamemode-contra"
-                      className="bg-red-500 text-white hover:bg-red-600"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'contra' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      Contra
+                      CONTRA
                     </Button>
                     <Button
-                      variant={gameModeFilter === 'statewar' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setGameModeFilter('statewar')}
                       data-testid="filter-gamemode-statewar"
-                      className="bg-indigo-500 text-white hover:bg-indigo-600"
+                      className={`font-mono border-2 border-black professional-transition ${
+                        gameModeFilter === 'statewar' 
+                          ? 'bg-black text-white' 
+                          : 'bg-white text-black hover:bg-black hover:text-white'
+                      }`}
                     >
-                      StateWar
+                      STATEWAR
                     </Button>
                   </div>
                 </div>
@@ -282,14 +318,13 @@ export default function PublicSection() {
                 {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
                   <div className="pt-2 border-t">
                     <Button
-                      variant="ghost"
                       size="sm"
                       onClick={() => {
                         setStatusFilter('all')
                         setGameModeFilter('all')
                       }}
                       data-testid="clear-filters"
-                      className="font-mono font-bold text-black hover:bg-black hover:text-white border border-black professional-transition"
+                      className="font-mono font-bold text-black hover:bg-black hover:text-white border-2 border-black bg-white professional-transition"
                     >
                       CLEAR ALL
                     </Button>
