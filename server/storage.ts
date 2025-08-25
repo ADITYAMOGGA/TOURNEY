@@ -4,11 +4,11 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { eq } from "drizzle-orm";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is required");
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  throw new Error("SUPABASE_URL and SUPABASE_ANON_KEY are required");
 }
 
-const client = postgres(process.env.DATABASE_URL);
+const client = postgres(process.env.SUPABASE_URL);
 const db = drizzle(client);
 
 export interface IStorage {
