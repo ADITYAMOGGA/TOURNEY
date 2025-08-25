@@ -19,9 +19,9 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
   const { user, signOut } = useAuth();
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className="bg-white border-b-2 border-dark-bg sticky top-0 z-50 backdrop-blur-sm">
+      <div className="max-w-full mx-auto px-8">
+        <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center gap-2">
@@ -34,14 +34,14 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
           
           {user && user.role && location === '/dashboard' && (
             <div className="hidden md:block">
-              <div className="ml-10 flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
+              <div className="ml-10 flex items-center space-x-0 bg-secondary border border-border">
                 <Button
                   variant={activeSection === 'public' ? 'default' : 'ghost'}
                   onClick={() => setActiveSection?.('public')}
-                  className={`px-4 py-2 text-sm ${
+                  className={`px-6 py-3 text-sm font-medium border-r border-border ${
                     activeSection === 'public'
-                      ? 'bg-white text-primary-orange shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-dark-bg text-white'
+                      : 'text-gray-600 hover:bg-gray-50'
                   }`}
                   data-testid="button-public-section"
                 >
@@ -52,10 +52,10 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                   <Button
                     variant={activeSection === 'organizer' ? 'default' : 'ghost'}
                     onClick={() => setActiveSection?.('organizer')}
-                    className={`px-4 py-2 text-sm ${
+                    className={`px-6 py-3 text-sm font-medium ${
                       activeSection === 'organizer'
-                        ? 'bg-white text-primary-orange shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                        ? 'bg-dark-bg text-white'
+                        : 'text-gray-600 hover:bg-gray-50'
                     }`}
                     data-testid="button-organizer-section"
                   >
@@ -112,7 +112,7 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button className="gradient-primary text-white hover:shadow-lg" data-testid="button-get-started">
+                  <Button className="bg-dark-bg text-white hover:bg-gray-800 px-6 py-2 font-medium professional-transition" data-testid="button-get-started">
                     Get Started
                   </Button>
                 </Link>

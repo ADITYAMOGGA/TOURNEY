@@ -8,25 +8,25 @@ interface AnimatedPageProps {
 const pageVariants = {
   initial: {
     opacity: 0,
-    x: -20,
-    scale: 0.98
+    x: 10,
+    filter: "blur(4px)",
   },
   in: {
     opacity: 1,
     x: 0,
-    scale: 1
+    filter: "blur(0px)",
   },
   out: {
     opacity: 0,
-    x: 20,
-    scale: 0.98
+    x: -10,
+    filter: "blur(4px)",
   }
 };
 
 const pageTransition = {
   type: "tween",
-  ease: "easeInOut",
-  duration: 0.4
+  ease: [0.165, 0.84, 0.44, 1],
+  duration: 0.5
 };
 
 export default function AnimatedPage({ children }: AnimatedPageProps) {
@@ -37,6 +37,7 @@ export default function AnimatedPage({ children }: AnimatedPageProps) {
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
+      className="w-full min-h-screen"
     >
       {children}
     </motion.div>

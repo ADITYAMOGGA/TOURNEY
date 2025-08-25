@@ -43,82 +43,108 @@ export default function PublicSection() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-8 text-white">
-        <h2 className="text-2xl font-bold mb-4">Tournament Browser</h2>
-        <p className="text-lg opacity-90 mb-6">
-          Discover and join exciting gaming tournaments happening now
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/tournaments">
-            <Button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold" data-testid="button-browse-all">
-              <Trophy className="w-5 h-5 mr-2" />
-              Browse All Tournaments
+      <div className="bg-black text-white p-12 border-2 border-gray-300 grid-pattern">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-4xl font-bold mb-4 font-mono tracking-tight">TOURNAMENT.BROWSER</h2>
+            <div className="h-1 w-20 bg-primary-orange mb-6"></div>
+            <p className="text-lg text-gray-300 mb-8 font-mono">
+              Discover competitive gaming tournaments.<br/>
+              Join the battle. Claim victory.
+            </p>
+          </div>
+          <div className="flex flex-col gap-4">
+            <Link href="/tournaments">
+              <Button className="w-full bg-white text-black hover:bg-gray-200 font-mono font-bold py-4 border-2 border-white professional-transition" data-testid="button-browse-all">
+                <Trophy className="w-5 h-5 mr-2" />
+                BROWSE ALL TOURNAMENTS
+              </Button>
+            </Link>
+            <Button variant="outline" className="w-full border-2 border-white text-white hover:bg-white hover:text-black font-mono font-bold py-4 professional-transition" data-testid="button-join-community">
+              <Users className="w-5 h-5 mr-2" />
+              JOIN COMMUNITY
             </Button>
-          </Link>
-          <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 transition-all duration-200" data-testid="button-join-community">
-            <Users className="w-5 h-5 mr-2" />
-            Join Community
-          </Button>
+          </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Live Tournaments</CardTitle>
-            <Trophy className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-500">
-              {tournaments?.filter(t => t.status === 'live').length || 0}
+      <div className="section-grid">
+        <div className="grid-cell">
+          <div className="flex items-center justify-between mb-4">
+            <Trophy className="h-8 w-8" />
+            <div className="text-right">
+              <div className="text-3xl font-mono font-bold">
+                {tournaments?.filter(t => t.status === 'live').length || 0}
+              </div>
+              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
+                LIVE NOW
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">Currently running</p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="h-px bg-border"></div>
+          <div className="mt-4 text-sm text-gray-600 font-mono">
+            CURRENTLY RUNNING
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Open Registration</CardTitle>
-            <Users className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-500">
-              {tournaments?.filter(t => t.status === 'open').length || 0}
+        <div className="grid-cell">
+          <div className="flex items-center justify-between mb-4">
+            <Users className="h-8 w-8" />
+            <div className="text-right">
+              <div className="text-3xl font-mono font-bold">
+                {tournaments?.filter(t => t.status === 'open').length || 0}
+              </div>
+              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
+                OPEN REG
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">Available to join</p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="h-px bg-border"></div>
+          <div className="mt-4 text-sm text-gray-600 font-mono">
+            AVAILABLE TO JOIN
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Starting Soon</CardTitle>
-            <Calendar className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-500">
-              {tournaments?.filter(t => t.status === 'starting').length || 0}
+        <div className="grid-cell">
+          <div className="flex items-center justify-between mb-4">
+            <Calendar className="h-8 w-8" />
+            <div className="text-right">
+              <div className="text-3xl font-mono font-bold">
+                {tournaments?.filter(t => t.status === 'starting').length || 0}
+              </div>
+              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
+                STARTING
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">About to begin</p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="h-px bg-border"></div>
+          <div className="mt-4 text-sm text-gray-600 font-mono">
+            BEGINNING SHORTLY
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Prize Pool</CardTitle>
-            <Trophy className="h-4 w-4 text-primary-orange" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ₹{tournaments?.reduce((sum, t) => sum + t.prizePool, 0).toLocaleString() || 0}
+        <div className="grid-cell">
+          <div className="flex items-center justify-between mb-4">
+            <Trophy className="h-8 w-8" />
+            <div className="text-right">
+              <div className="text-3xl font-mono font-bold">
+                ${tournaments?.reduce((sum, t) => sum + t.prizePool, 0).toLocaleString() || 0}
+              </div>
+              <div className="text-xs font-mono uppercase tracking-wider text-gray-600">
+                TOTAL POOL
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">Available rewards</p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="h-px bg-border"></div>
+          <div className="mt-4 text-sm text-gray-600 font-mono">
+            ACROSS ALL TOURNAMENTS
+          </div>
+        </div>
       </div>
 
       <div>
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-          <h3 className="text-xl font-bold text-dark-bg">Available Tournaments</h3>
+          <h3 className="text-2xl font-mono font-bold uppercase tracking-tight">AVAILABLE.TOURNAMENTS</h3>
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
@@ -140,12 +166,12 @@ export default function PublicSection() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="mb-6 p-4 bg-gray-50 rounded-lg border"
+              className="mb-6 p-6 bg-white border-2 border-black"
             >
               <div className="flex flex-col gap-4">
                 {/* Status Filters */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Status</h4>
+                  <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">STATUS</h4>
                   <div className="flex flex-wrap gap-2">
                     <Button
                       variant={statusFilter === 'all' ? 'default' : 'outline'}
@@ -184,7 +210,7 @@ export default function PublicSection() {
                 
                 {/* Game Mode Filters */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Game Mode</h4>
+                  <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">GAME MODE</h4>
                   <div className="flex flex-wrap gap-2">
                     <Button
                       variant={gameModeFilter === 'all' ? 'default' : 'outline'}
@@ -263,9 +289,9 @@ export default function PublicSection() {
                         setGameModeFilter('all')
                       }}
                       data-testid="clear-filters"
-                      className="text-gray-600 hover:text-gray-800"
+                      className="font-mono font-bold text-black hover:bg-black hover:text-white border border-black professional-transition"
                     >
-                      Clear All Filters
+                      CLEAR ALL
                     </Button>
                   </div>
                 )}
@@ -275,7 +301,7 @@ export default function PublicSection() {
         </AnimatePresence>
 
         <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           layout
         >
           <AnimatePresence mode="wait">
