@@ -8,17 +8,17 @@ interface AnimatedPageProps {
 const pageVariants = {
   initial: {
     opacity: 0,
-    x: 10,
+    scale: 0.95,
     filter: "blur(4px)",
   },
   in: {
     opacity: 1,
-    x: 0,
+    scale: 1,
     filter: "blur(0px)",
   },
   out: {
     opacity: 0,
-    x: -10,
+    scale: 1.05,
     filter: "blur(4px)",
   }
 };
