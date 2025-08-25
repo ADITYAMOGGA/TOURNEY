@@ -23,7 +23,9 @@ import {
   Save,
   Edit,
   Shield,
-  Globe
+  Globe,
+  ArrowLeft,
+  Trophy
 } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -147,6 +149,19 @@ export default function Profile() {
       <Nav />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Back Navigation */}
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => navigate("/dashboard")}
+            variant="outline"
+            className="flex items-center gap-2 font-mono"
+            data-testid="button-back-to-tournaments"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            BACK TO TOURNAMENTS
+          </Button>
+        </div>
+
         {/* Welcome Header */}
         <div className="text-center">
           <h1 className="text-4xl font-bold text-dark-bg font-mono mb-4">
@@ -437,7 +452,7 @@ export default function Profile() {
                   className="bg-white text-black hover:bg-gray-100 font-mono border-2 border-black"
                   data-testid="button-browse-tournaments"
                 >
-                  <Users className="w-5 h-5 mr-2" />
+                  <Trophy className="w-5 h-5 mr-2" />
                   BROWSE TOURNAMENTS
                 </Button>
                 <Button 
