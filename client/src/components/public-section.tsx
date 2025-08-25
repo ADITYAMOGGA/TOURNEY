@@ -10,15 +10,35 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function PublicSection() {
-  const [filter, setFilter] = useState<'all' | 'open' | 'starting' | 'live'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'starting' | 'live'>('all')
+  const [gameModeFilter, setGameModeFilter] = useState<'all' | 'br' | 'cs' | 'limited' | 'unlimited' | 'contra' | 'statewar'>('all')
   
   const { data: tournaments, isLoading } = useQuery<Tournament[]>({
     queryKey: ["/api/tournaments"],
   })
 
-  const filteredTournaments = tournaments?.filter(tournament => 
-    filter === 'all' || tournament.status === filter
-  ) || []
+  const filteredTournaments = tournaments?.filter(tournament => {
+    // Status filter
+    const statusMatch = statusFilter === 'all' || tournament.status === statusFilter
+    
+    // Game mode filter
+    let gameModeMatch = true
+    if (gameModeFilter === 'br') {
+      gameModeMatch = tournament.gameMode === 'BR'
+    } else if (gameModeFilter === 'cs') {
+      gameModeMatch = tournament.gameMode === 'CS'
+    } else if (gameModeFilter === 'limited') {
+      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Limited'
+    } else if (gameModeFilter === 'unlimited') {
+      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Unlimited'
+    } else if (gameModeFilter === 'contra') {
+      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'Contra'
+    } else if (gameModeFilter === 'statewar') {
+      gameModeMatch = tournament.gameMode === 'CS' && tournament.csGameVariant === 'StateWar'
+    }
+    
+    return statusMatch && gameModeMatch
+  }) || []
 
   return (
     <div className="space-y-8">
@@ -96,41 +116,111 @@ export default function PublicSection() {
       </div>
 
       <div>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
           <h3 className="text-xl font-bold text-dark-bg">Available Tournaments</h3>
-          <div className="flex gap-2">
-            <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('all')}
-              data-testid="filter-all"
-            >
-              All
-            </Button>
-            <Button
-              variant={filter === 'open' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('open')}
-              data-testid="filter-open"
-            >
-              Open
-            </Button>
-            <Button
-              variant={filter === 'starting' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('starting')}
-              data-testid="filter-starting"
-            >
-              Starting
-            </Button>
-            <Button
-              variant={filter === 'live' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('live')}
-              data-testid="filter-live"
-            >
-              Live
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Status Filters */}
+            <div className="flex gap-2">
+              <Button
+                variant={statusFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('all')}
+                data-testid="filter-status-all"
+              >
+                All Status
+              </Button>
+              <Button
+                variant={statusFilter === 'open' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('open')}
+                data-testid="filter-status-open"
+              >
+                Open
+              </Button>
+              <Button
+                variant={statusFilter === 'starting' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('starting')}
+                data-testid="filter-status-starting"
+              >
+                Starting
+              </Button>
+              <Button
+                variant={statusFilter === 'live' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('live')}
+                data-testid="filter-status-live"
+              >
+                Live
+              </Button>
+            </div>
+            
+            {/* Game Mode Filters */}
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={gameModeFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('all')}
+                data-testid="filter-gamemode-all"
+                className="bg-gradient-to-r from-primary-orange to-secondary-orange text-white hover:shadow-lg"
+              >
+                All Games
+              </Button>
+              <Button
+                variant={gameModeFilter === 'br' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('br')}
+                data-testid="filter-gamemode-br"
+                className="bg-green-500 text-white hover:bg-green-600"
+              >
+                BR Full Map
+              </Button>
+              <Button
+                variant={gameModeFilter === 'cs' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('cs')}
+                data-testid="filter-gamemode-cs"
+                className="bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Clash Squad
+              </Button>
+              <Button
+                variant={gameModeFilter === 'limited' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('limited')}
+                data-testid="filter-gamemode-limited"
+                className="bg-yellow-500 text-white hover:bg-yellow-600"
+              >
+                Limited
+              </Button>
+              <Button
+                variant={gameModeFilter === 'unlimited' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('unlimited')}
+                data-testid="filter-gamemode-unlimited"
+                className="bg-purple-500 text-white hover:bg-purple-600"
+              >
+                Unlimited
+              </Button>
+              <Button
+                variant={gameModeFilter === 'contra' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('contra')}
+                data-testid="filter-gamemode-contra"
+                className="bg-red-500 text-white hover:bg-red-600"
+              >
+                Contra
+              </Button>
+              <Button
+                variant={gameModeFilter === 'statewar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGameModeFilter('statewar')}
+                data-testid="filter-gamemode-statewar"
+                className="bg-indigo-500 text-white hover:bg-indigo-600"
+              >
+                StateWar
+              </Button>
+            </div>
           </div>
         </div>
 

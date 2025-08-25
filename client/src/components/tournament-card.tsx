@@ -80,7 +80,19 @@ export default function TournamentCard({ tournament }: TournamentCardProps) {
               >
                 {tournament.name}
               </motion.h3>
-              <p className="text-sm opacity-90 capitalize">{tournament.type} Tournament</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">
+                  {tournament.gameMode === 'BR' ? 'Battle Royale' : 'Clash Squad'}
+                </span>
+                <span className="text-xs bg-white/20 px-2 py-1 rounded-full font-medium capitalize">
+                  {tournament.type}
+                </span>
+                {tournament.gameMode === 'CS' && tournament.csGameVariant && (
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full font-medium">
+                    {tournament.csGameVariant}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="text-right">
               <motion.div 
