@@ -180,6 +180,17 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                             Dashboard
                           </Button>
                         </Link>
+                        <Link href="/profile">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-gray-600"
+                            onClick={() => setIsOpen(false)}
+                            data-testid="button-mobile-profile"
+                          >
+                            <User className="w-4 h-4 mr-2" />
+                            Profile
+                          </Button>
+                        </Link>
                         <Link href="/settings">
                           <Button 
                             variant="ghost" 
@@ -189,6 +200,17 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                           >
                             <Settings className="w-4 h-4 mr-2" />
                             Settings
+                          </Button>
+                        </Link>
+                        <Link href="/statistics">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-gray-600"
+                            onClick={() => setIsOpen(false)}
+                            data-testid="button-mobile-statistics"
+                          >
+                            <Trophy className="w-4 h-4 mr-2" />
+                            Statistics
                           </Button>
                         </Link>
                         <Button 
