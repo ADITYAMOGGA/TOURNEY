@@ -15,7 +15,31 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANO
 const db = null; // We'll implement proper connection after you run the SQL queries
 
 // Mock storage implementation for development
-const mockTournaments: Tournament[] = [];
+const mockTournaments: Tournament[] = [
+  {
+    id: "2b903214-1bfe-4b21-ac0d-586111ff4900",
+    name: "ALPHA LEGENDS CHAMPIONSHIP",
+    description: "Battle Royale Squad tournament",
+    gameMode: "BR",
+    type: "squad",
+    format: "BR Squad",
+    prizePool: 5000,
+    slotPrice: 100,
+    slots: 100,
+    registeredPlayers: 45,
+    matchCount: 3,
+    killPoints: 1,
+    positionPoints: "10,6,5,4,3,2,1",
+    csGameVariant: null,
+    device: "Mobile",
+    rules: "No hacks, respect opponents",
+    status: "open",
+    startTime: new Date("2025-08-26T14:00:00Z"),
+    registrationDeadline: new Date("2025-08-26T13:30:00Z"),
+    organizerId: "organizer-1",
+    createdAt: new Date("2025-08-25T10:00:00Z"),
+  }
+];
 const mockUsers: User[] = [];
 const mockRegistrations: TournamentRegistration[] = [];
 
@@ -180,4 +204,107 @@ export class DbStorage implements IStorage {
   }
 }
 
-export const storage = new DbStorage();
+export class MemStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    return mockUsers.find(u => u.id === id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return mockUsers.find(u => u.username === username);
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const user: User = {
+      id: Date.now().toString(),
+      username: insertUser.username,
+      password: insertUser.password,
+    };
+    mockUsers.push(user);
+    return user;
+  }
+
+  async getTournament(id: string): Promise<Tournament | undefined> {
+    return mockTournaments.find(t => t.id === id);
+  }
+
+  async getAllTournaments(): Promise<Tournament[]> {
+    return [...mockTournaments].sort((a, b) => 
+      new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime()
+    );
+  }
+
+  async getTournamentsByStatus(status: string): Promise<Tournament[]> {
+    return mockTournaments.filter(t => t.status === status);
+  }
+
+  async createTournament(insertTournament: InsertTournament): Promise<Tournament> {
+    const tournament: Tournament = {
+      id: Date.now().toString(),
+      name: insertTournament.name,
+      description: insertTournament.description || '',
+      gameMode: insertTournament.gameMode,
+      type: insertTournament.type,
+      format: insertTournament.format,
+      prizePool: insertTournament.prizePool,
+      slotPrice: insertTournament.slotPrice,
+      slots: insertTournament.slots,
+      registeredPlayers: 0,
+      matchCount: insertTournament.matchCount || 1,
+      killPoints: insertTournament.killPoints || 0,
+      positionPoints: insertTournament.positionPoints || "",
+      csGameVariant: insertTournament.csGameVariant || null,
+      device: insertTournament.device || null,
+      rules: insertTournament.rules || null,
+      status: insertTournament.status || 'open',
+      startTime: insertTournament.startTime,
+      registrationDeadline: insertTournament.registrationDeadline,
+      organizerId: insertTournament.organizerId,
+      createdAt: new Date(),
+    };
+    
+    mockTournaments.push(tournament);
+    return tournament;
+  }
+
+  async updateTournament(id: string, updates: Partial<Tournament>): Promise<Tournament | undefined> {
+    const index = mockTournaments.findIndex(t => t.id === id);
+    if (index === -1) return undefined;
+    
+    mockTournaments[index] = { ...mockTournaments[index], ...updates };
+    return mockTournaments[index];
+  }
+
+  async getTournamentRegistrations(tournamentId: string): Promise<TournamentRegistration[]> {
+    return mockRegistrations.filter(r => r.tournamentId === tournamentId);
+  }
+
+  async createTournamentRegistration(insertRegistration: InsertTournamentRegistration): Promise<TournamentRegistration> {
+    const registration: TournamentRegistration = {
+      id: Date.now().toString(),
+      tournamentId: insertRegistration.tournamentId,
+      userId: insertRegistration.userId,
+      teamName: insertRegistration.teamName || null,
+      playerNames: insertRegistration.playerNames || null,
+      registeredAt: new Date(),
+    };
+    
+    mockRegistrations.push(registration);
+    
+    // Update tournament registered players count
+    const tournament = await this.getTournament(insertRegistration.tournamentId);
+    if (tournament) {
+      await this.updateTournament(insertRegistration.tournamentId, {
+        registeredPlayers: tournament.registeredPlayers + 1
+      });
+    }
+    
+    return registration;
+  }
+
+  async getUserTournamentRegistrations(userId: string): Promise<TournamentRegistration[]> {
+    return mockRegistrations.filter(r => r.userId === userId);
+  }
+}
+
+// Use memory storage for development since database schema is incomplete
+export const storage = new MemStorage();
