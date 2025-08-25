@@ -81,15 +81,15 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center" data-testid="button-dashboard">
+                    <Link href="/profile" className="flex items-center" data-testid="button-dashboard">
                       <LayoutDashboard className="w-4 h-4 mr-2" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center" data-testid="button-profile">
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
+                    <Link href="/dashboard" className="flex items-center" data-testid="button-tournaments">
+                      <Trophy className="w-4 h-4 mr-2" />
+                      Tournaments
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -169,7 +169,7 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                         <div className="px-3 py-2 text-sm text-gray-600">
                           Welcome, {user.username || 'User'}
                         </div>
-                        <Link href="/dashboard">
+                        <Link href="/profile">
                           <Button 
                             variant="ghost" 
                             className="w-full justify-start text-gray-600"
@@ -180,15 +180,15 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                             Dashboard
                           </Button>
                         </Link>
-                        <Link href="/profile">
+                        <Link href="/dashboard">
                           <Button 
                             variant="ghost" 
                             className="w-full justify-start text-gray-600"
                             onClick={() => setIsOpen(false)}
-                            data-testid="button-mobile-profile"
+                            data-testid="button-mobile-tournaments"
                           >
-                            <User className="w-4 h-4 mr-2" />
-                            Profile
+                            <Trophy className="w-4 h-4 mr-2" />
+                            Tournaments
                           </Button>
                         </Link>
                         <Link href="/settings">
