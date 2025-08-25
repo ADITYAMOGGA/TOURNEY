@@ -13,7 +13,6 @@ import { useToast } from "@/hooks/use-toast"
 import { 
   User, 
   Users, 
-  Guild, 
   Youtube, 
   Instagram, 
   Twitter, 
