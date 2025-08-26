@@ -14,35 +14,8 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANO
 // For now, use Supabase client with mock database storage until connection is resolved
 const db = null; // We'll implement proper connection after you run the SQL queries
 
-// Mock storage implementation for development
-const mockTournaments: Tournament[] = [
-  {
-    id: "2b903214-1bfe-4b21-ac0d-586111ff4900",
-    name: "ALPHA LEGENDS CHAMPIONSHIP",
-    description: "Battle Royale Squad tournament",
-    gameMode: "BR",
-    type: "squad",
-    format: "BR Squad",
-    prizePool: 5000,
-    slotPrice: 100,
-    slots: 100,
-    registeredPlayers: 45,
-    matchCount: 3,
-    killPoints: 1,
-    positionPoints: "10,6,5,4,3,2,1",
-    csGameVariant: null,
-    device: "Mobile",
-    rules: "No hacks, respect opponents",
-    status: "open",
-    startTime: new Date("2025-08-26T14:00:00Z"),
-    registrationDeadline: new Date("2025-08-26T13:30:00Z"),
-    organizerId: "organizer-1",
-    createdAt: new Date("2025-08-25T10:00:00Z"),
-    isPromoted: true,
-    promotionPaid: true,
-    promotionAmount: 100,
-  }
-];
+// Mock storage implementation for development - remove demo data, use only real tournaments
+const mockTournaments: Tournament[] = [];
 const mockUsers: User[] = [];
 const mockRegistrations: TournamentRegistration[] = [];
 
@@ -112,6 +85,9 @@ export class DbStorage implements IStorage {
       registrationDeadline: item.registration_deadline,
       organizerId: item.organizer_id,
       createdAt: item.created_at,
+      isPromoted: item.is_promoted || false,
+      promotionPaid: item.promotion_paid || false,
+      promotionAmount: item.promotion_amount || 0,
     })) as Tournament[];
   }
 
@@ -142,6 +118,9 @@ export class DbStorage implements IStorage {
       start_time: insertTournament.startTime,
       registration_deadline: insertTournament.registrationDeadline,
       organizer_id: insertTournament.organizerId,
+      is_promoted: insertTournament.isPromoted || false,
+      promotion_paid: insertTournament.promotionPaid || false,
+      promotion_amount: insertTournament.promotionAmount || 0,
     };
 
     const { data, error } = await supabase.from('tournaments').insert(transformedData).select().single();
@@ -173,6 +152,9 @@ export class DbStorage implements IStorage {
       registrationDeadline: data.registration_deadline,
       organizerId: data.organizer_id,
       createdAt: data.created_at,
+      isPromoted: data.is_promoted || false,
+      promotionPaid: data.promotion_paid || false,
+      promotionAmount: data.promotion_amount || 0,
     } as Tournament;
   }
 
@@ -313,4 +295,4 @@ export class MemStorage implements IStorage {
 }
 
 // Use memory storage for development since database schema is incomplete
-export const storage = new MemStorage();
+export const storage = new DbStorage();
