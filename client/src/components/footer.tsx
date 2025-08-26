@@ -95,7 +95,7 @@ export default function Footer() {
             © 2024 GARENA x TOURNEY. All rights reserved.
           </p>
           <p className="text-gray-600 text-sm mt-4 md:mt-0">
-            Made with ❤️ for the Free Fire community
+            Powering the future of competitive esports
           </p>
         </div>
       </div>
