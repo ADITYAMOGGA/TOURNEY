@@ -74,7 +74,7 @@ function PromotedTournamentCard({ tournament }: { tournament: Tournament }) {
       
       {/* Main content */}
       <div className="relative z-10 h-full flex items-center">
-        <div className="max-w-4xl px-12 text-white">
+        <div className="max-w-5xl px-8 md:px-12 text-white w-full">
           {/* Promoted badge */}
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-yellow-500 px-4 py-2 rounded-full flex items-center gap-2">
@@ -137,23 +137,23 @@ function PromotedTournamentCard({ tournament }: { tournament: Tournament }) {
           </div>
           
           {/* CTA buttons */}
-          <div className="flex gap-4">
-            <Link href={`/tournament/${tournament.id}`}>
+          <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+            <Link href={`/tournament/${tournament.id}`} className="flex-1">
               <Button 
                 size="lg" 
-                className="bg-primary-orange hover:bg-orange-600 text-white font-bold px-8 py-4 text-lg"
+                className="w-full bg-primary-orange hover:bg-orange-600 text-white font-bold px-6 py-3 text-base"
                 data-testid={`button-join-${tournament.id}`}
               >
-                <Play className="w-5 h-5 mr-2" />
+                <Play className="w-4 h-4 mr-2" />
                 JOIN NOW
               </Button>
             </Link>
             
-            <Link href={`/tournament/${tournament.id}`}>
+            <Link href={`/tournament/${tournament.id}`} className="flex-1">
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-white text-white hover:bg-white hover:text-black font-bold px-8 py-4 text-lg opacity-100"
+                className="w-full border-2 border-white bg-transparent text-white hover:bg-white hover:text-black font-bold px-6 py-3 text-base"
                 data-testid={`button-details-${tournament.id}`}
               >
                 VIEW DETAILS
