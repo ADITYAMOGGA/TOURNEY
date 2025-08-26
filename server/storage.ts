@@ -123,11 +123,14 @@ export class DbStorage implements IStorage {
       promotion_amount: insertTournament.promotionAmount || 0,
     };
 
+    console.log('Attempting to insert tournament data:', transformedData);
     const { data, error } = await supabase.from('tournaments').insert(transformedData).select().single();
     if (error) {
-      console.error('Supabase error:', error);
-      throw error;
+      console.error('Supabase insertion error:', error);
+      console.error('Failed data:', transformedData);
+      throw new Error(`Database error: ${error.message}`);
     }
+    console.log('Tournament successfully inserted:', data);
     
     // Transform back to camelCase for response
     return {
