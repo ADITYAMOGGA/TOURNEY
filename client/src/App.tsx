@@ -47,39 +47,39 @@ function AuthenticatedRouter() {
 
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <Switch key={location}>
+      <Switch location={location} key={location}>
         <Route path="/">
-          <AnimatedPage><Home /></AnimatedPage>
+          <AnimatedPage key="home"><Home /></AnimatedPage>
         </Route>
         <Route path="/tournaments">
-          <AnimatedPage><Tournaments /></AnimatedPage>
+          <AnimatedPage key="tournaments"><Tournaments /></AnimatedPage>
         </Route>
         <Route path="/create-tournament">
-          <AnimatedPage><CreateTournament /></AnimatedPage>
+          <AnimatedPage key="create-tournament"><CreateTournament /></AnimatedPage>
         </Route>
         <Route path="/tournament/:id">
-          <AnimatedPage><TournamentDetails /></AnimatedPage>
+          <AnimatedPage key="tournament-details"><TournamentDetails /></AnimatedPage>
         </Route>
         <Route path="/login">
-          <AnimatedPage><Login /></AnimatedPage>
+          <AnimatedPage key="login"><Login /></AnimatedPage>
         </Route>
         <Route path="/role-selection">
-          <AnimatedPage><RoleSelection /></AnimatedPage>
+          <AnimatedPage key="role-selection"><RoleSelection /></AnimatedPage>
         </Route>
         <Route path="/dashboard">
-          <AnimatedPage><Dashboard /></AnimatedPage>
+          <AnimatedPage key="dashboard"><Dashboard /></AnimatedPage>
         </Route>
         <Route path="/settings">
-          <AnimatedPage><Settings /></AnimatedPage>
+          <AnimatedPage key="settings"><Settings /></AnimatedPage>
         </Route>
         <Route path="/statistics">
-          <AnimatedPage><Statistics /></AnimatedPage>
+          <AnimatedPage key="statistics"><Statistics /></AnimatedPage>
         </Route>
         <Route path="/profile">
-          <AnimatedPage><Profile /></AnimatedPage>
+          <AnimatedPage key="profile"><Profile /></AnimatedPage>
         </Route>
         <Route>
-          <AnimatedPage><NotFound /></AnimatedPage>
+          <AnimatedPage key="not-found"><NotFound /></AnimatedPage>
         </Route>
       </Switch>
     </AnimatePresence>
