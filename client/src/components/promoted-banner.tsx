@@ -3,11 +3,14 @@ import { Tournament } from "@shared/schema";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Trophy, Users, Calendar, Play, Star } from "lucide-react";
+import { Trophy, Users, Calendar, Play, Star, Smartphone } from "lucide-react";
 import { format } from "date-fns";
-// import Autoplay from "embla-carousel-autoplay";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
 export default function PromotedBanner() {
+  const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+  
   const { data: tournaments } = useQuery<Tournament[]>({
     queryKey: ["/api/tournaments"],
   });
@@ -32,11 +35,14 @@ export default function PromotedBanner() {
   return (
     <div className="w-full h-[60vh] relative">
       <Carousel
+        plugins={[plugin.current]}
         className="w-full h-full"
         opts={{
           align: "start",
           loop: true,
         }}
+        onMouseEnter={plugin.current.stop}
+        onMouseLeave={plugin.current.reset}
       >
         <CarouselContent className="h-full">
           {promotedTournaments.map((tournament) => (
@@ -118,6 +124,16 @@ function PromotedTournamentCard({ tournament }: { tournament: Tournament }) {
                 <div className="text-xl font-bold">{format(new Date(tournament.startTime), 'MMM dd, HH:mm')}</div>
               </div>
             </div>
+            
+            {tournament.device && (
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-6 h-6 text-purple-400" />
+                <div>
+                  <div className="text-sm text-gray-300">Device</div>
+                  <div className="text-xl font-bold">{tournament.device}</div>
+                </div>
+              </div>
+            )}
           </div>
           
           {/* CTA buttons */}
@@ -137,7 +153,7 @@ function PromotedTournamentCard({ tournament }: { tournament: Tournament }) {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-white text-white hover:bg-white hover:text-black font-bold px-8 py-4 text-lg"
+                className="border-white text-white hover:bg-white hover:text-black font-bold px-8 py-4 text-lg opacity-100"
                 data-testid={`button-details-${tournament.id}`}
               >
                 VIEW DETAILS
