@@ -2,28 +2,25 @@ import { useQuery } from "@tanstack/react-query"
 import { Tournament } from "@shared/schema"
 import { Link } from "wouter"
 import TournamentCard from "./tournament-card"
+import PromotedBanner from "./promoted-banner"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { Trophy, Users, Calendar, Search, Filter, Play, Star } from "lucide-react"
+import { Filter } from "lucide-react"
 import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { format } from "date-fns"
 
-export default function PublicSection() {
+interface PublicSectionProps {
+  searchQuery?: string
+}
+
+export default function PublicSection({ searchQuery = '' }: PublicSectionProps) {
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'starting' | 'live'>('all')
   const [gameModeFilter, setGameModeFilter] = useState<'all' | 'br' | 'cs' | 'limited' | 'unlimited' | 'contra' | 'statewar'>('all')
-  const [searchQuery, setSearchQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   
   const { data: tournaments, isLoading } = useQuery<Tournament[]>({
     queryKey: ["/api/tournaments"],
   })
-
-  const featuredTournaments = useMemo(() => {
-    return tournaments?.filter(t => t.prizePool > 10000).slice(0, 5) || []
-  }, [tournaments])
 
   const filteredTournaments = useMemo(() => {
     return tournaments?.filter(tournament => {
@@ -55,117 +52,15 @@ export default function PublicSection() {
     }) || []
   }, [tournaments, searchQuery, statusFilter, gameModeFilter])
 
-  const FeaturedTournamentCard = ({ tournament }: { tournament: Tournament }) => (
-    <div className="relative w-full h-[500px] overflow-hidden bg-black">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(/api/tournament-banner/${tournament.id})`
-        }}
-      />
-      
-      {/* Overlay Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-      
-      {/* Content */}
-      <div className="relative z-10 h-full flex items-center">
-        <div className="max-w-2xl px-12 text-white">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="bg-primary-orange px-3 py-1 text-xs font-bold uppercase tracking-wider">
-              FEATURED
-            </span>
-            <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider ${
-              tournament.status === 'open' ? 'bg-green-500' :
-              tournament.status === 'starting' ? 'bg-yellow-500 text-black' :
-              tournament.status === 'live' ? 'bg-red-500' : 'bg-gray-500'
-            }`}>
-              {tournament.status}
-            </span>
-          </div>
-          
-          <h2 className="text-5xl font-bold mb-4 font-mono tracking-tight">
-            {tournament.name}
-          </h2>
-          
-          <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-lg">
-            {tournament.description || "Join the ultimate gaming tournament and compete for massive prizes!"}
-          </p>
-          
-          <div className="flex items-center gap-8 mb-8 text-lg">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-6 h-6 text-primary-orange" />
-              <span className="font-bold">${tournament.prizePool.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-6 h-6 text-primary-orange" />
-              <span>{tournament.registeredPlayers}/{tournament.slots}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-primary-orange" />
-              <span>{format(tournament.startTime, 'MMM dd, HH:mm')}</span>
-            </div>
-          </div>
-          
-          <div className="flex gap-4">
-            <Link href={`/tournament/${tournament.id}`}>
-              <Button className="bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg font-bold transition-all duration-200">
-                <Play className="w-5 h-5 mr-2" />
-                JOIN NOW
-              </Button>
-            </Link>
-            <Link href={`/tournament/${tournament.id}`}>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg font-bold transition-all duration-200">
-                <Star className="w-5 h-5 mr-2" />
-                VIEW DETAILS
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-
   return (
-    <div className="space-y-12">
-      {/* Featured Tournaments Carousel */}
-      {!isLoading && featuredTournaments.length > 0 && (
-        <section>
-          <Carousel opts={{ align: "start", loop: true }} className="w-full">
-            <CarouselContent>
-              {featuredTournaments.map((tournament) => (
-                <CarouselItem key={tournament.id}>
-                  <FeaturedTournamentCard tournament={tournament} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
-          </Carousel>
-        </section>
-      )}
+    <div className="space-y-8">
+      {/* Promoted Banner - Netflix Style */}
+      <PromotedBanner />
 
-      {/* Search and Filters Section */}
+      {/* Filters Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="space-y-6">
-          <div>
-            <h3 className="text-3xl font-bold mb-2 font-mono">DISCOVER TOURNAMENTS</h3>
-            <p className="text-gray-600">Find the perfect tournament to showcase your skills</p>
-          </div>
-
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                type="text"
-                placeholder="Search tournaments..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 py-3 text-lg border-2 border-black focus:border-primary-orange"
-                data-testid="input-search-tournaments"
-              />
-            </div>
-            
             <Button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center gap-2 font-mono border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200 px-6 py-3"
@@ -214,19 +109,19 @@ export default function PublicSection() {
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* Game Mode Filters */}
                   <div>
                     <h4 className="text-sm font-mono font-bold uppercase tracking-wider mb-3">GAME MODE</h4>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        { key: 'all', label: 'ALL GAMES' },
-                        { key: 'br', label: 'BR FULL MAP' },
+                        { key: 'all', label: 'ALL MODES' },
+                        { key: 'br', label: 'BATTLE ROYALE' },
                         { key: 'cs', label: 'CLASH SQUAD' },
-                        { key: 'limited', label: 'LIMITED' },
-                        { key: 'unlimited', label: 'UNLIMITED' },
+                        { key: 'limited', label: 'CS LIMITED' },
+                        { key: 'unlimited', label: 'CS UNLIMITED' },
                         { key: 'contra', label: 'CONTRA' },
-                        { key: 'statewar', label: 'STATEWAR' }
+                        { key: 'statewar', label: 'STATE WAR' }
                       ].map(({ key, label }) => (
                         <Button
                           key={key}
@@ -245,18 +140,17 @@ export default function PublicSection() {
                   </div>
 
                   {/* Clear Filters */}
-                  {(statusFilter !== 'all' || gameModeFilter !== 'all' || searchQuery) && (
-                    <div className="pt-2 border-t">
+                  {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
+                    <div className="pt-4 border-t border-gray-200">
                       <Button
-                        size="sm"
                         onClick={() => {
                           setStatusFilter('all')
                           setGameModeFilter('all')
-                          setSearchQuery('')
                         }}
-                        className="font-mono font-bold text-black hover:bg-black hover:text-white border-2 border-black bg-white transition-all duration-200"
+                        variant="outline"
+                        className="font-mono border-2 border-gray-300 text-gray-600 hover:border-black hover:text-black"
                       >
-                        CLEAR ALL
+                        CLEAR ALL FILTERS
                       </Button>
                     </div>
                   )}
@@ -267,89 +161,55 @@ export default function PublicSection() {
         </div>
       </section>
 
-      {/* Tournaments Grid */}
+      {/* Tournament Results */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          layout
-        >
-          <AnimatePresence mode="wait">
-            {isLoading ? (
-              Array.from({ length: 6 }).map((_, i) => (
-                <motion.div
-                  key={`skeleton-${i}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <div className="h-96 bg-gray-200 animate-pulse border-2">
-                    <Skeleton className="w-full h-full" />
-                  </div>
-                </motion.div>
-              ))
-            ) : filteredTournaments.length === 0 ? (
-              <motion.div 
-                key="no-tournaments"
-                className="col-span-full text-center py-16"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold mb-2 font-mono">
+            {searchQuery ? `SEARCH RESULTS FOR "${searchQuery}"` : 'ALL TOURNAMENTS'}
+          </h3>
+          <p className="text-gray-600">
+            {!isLoading && `${filteredTournaments.length} tournament${filteredTournaments.length !== 1 ? 's' : ''} found`}
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-64 w-full" />
+            ))}
+          </div>
+        ) : filteredTournaments.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+              <Filter className="w-12 h-12 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No tournaments found</h3>
+            <p className="text-gray-600 mb-6">
+              {searchQuery 
+                ? `No tournaments match your search "${searchQuery}"`
+                : "Try adjusting your filters to find tournaments"
+              }
+            </p>
+            {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
+              <Button
+                onClick={() => {
+                  setStatusFilter('all')
+                  setGameModeFilter('all')
+                }}
+                variant="outline"
+                className="font-mono"
               >
-                <div className="max-w-md mx-auto">
-                  <motion.div 
-                    className="w-32 h-32 bg-gray-100 border-2 border-black flex items-center justify-center mx-auto mb-6"
-                    animate={{ 
-                      rotate: [0, 5, -5, 0],
-                      scale: [1, 1.05, 1] 
-                    }}
-                    transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }}
-                  >
-                    <Trophy className="w-16 h-16 text-gray-400" />
-                  </motion.div>
-                  <h4 className="text-2xl font-bold text-gray-900 mb-4 font-mono">NO TOURNAMENTS FOUND</h4>
-                  <p className="text-gray-600 mb-8 text-lg">
-                    {searchQuery || statusFilter !== 'all' || gameModeFilter !== 'all' 
-                      ? "Try adjusting your filters or search terms"
-                      : "New tournaments are added regularly. Check back soon!"}
-                  </p>
-                  {(searchQuery || statusFilter !== 'all' || gameModeFilter !== 'all') && (
-                    <Button
-                      onClick={() => {
-                        setSearchQuery('')
-                        setStatusFilter('all')
-                        setGameModeFilter('all')
-                      }}
-                      className="bg-black text-white hover:bg-gray-800 font-mono"
-                    >
-                      CLEAR FILTERS
-                    </Button>
-                  )}
-                </div>
-              </motion.div>
-            ) : (
-              filteredTournaments.map((tournament, index) => (
-                <motion.div
-                  key={tournament.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ 
-                    duration: 0.3,
-                    delay: index * 0.1 
-                  }}
-                  layout
-                >
-                  <TournamentCard tournament={tournament} />
-                </motion.div>
-              ))
+                CLEAR FILTERS
+              </Button>
             )}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTournaments.map((tournament) => (
+              <TournamentCard key={tournament.id} tournament={tournament} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )

@@ -2,18 +2,21 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut, Trophy, Users, LayoutDashboard, Settings } from "lucide-react";
+import { Menu, User, LogOut, Trophy, Users, LayoutDashboard, Settings, Search } from "lucide-react";
 import garenaLogo from "@assets/garena_1756025529823.png";
 import tourneyLogo from "@assets/image_1756054912806.png";
 
 interface NavProps {
   activeSection?: 'organizer' | 'public'
   setActiveSection?: (section: 'organizer' | 'public') => void
+  searchQuery?: string
+  setSearchQuery?: (query: string) => void
 }
 
-export default function Nav({ activeSection = 'public', setActiveSection }: NavProps = {}) {
+export default function Nav({ activeSection = 'public', setActiveSection, searchQuery = '', setSearchQuery }: NavProps = {}) {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
@@ -63,6 +66,23 @@ export default function Nav({ activeSection = 'public', setActiveSection }: NavP
                     ORGANIZER
                   </Button>
                 )}
+              </div>
+            </div>
+          )}
+          
+          {/* Search bar - show on homepage and dashboard public section */}
+          {(location === '/' || (location === '/dashboard' && activeSection === 'public')) && (
+            <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Search tournaments..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery?.(e.target.value)}
+                  className="pl-10 py-2 border-2 border-gray-300 focus:border-primary-orange rounded-lg"
+                  data-testid="input-search-tournaments-header"
+                />
               </div>
             </div>
           )}

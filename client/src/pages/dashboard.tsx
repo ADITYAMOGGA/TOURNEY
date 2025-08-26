@@ -10,6 +10,7 @@ export default function Dashboard() {
   const { user, loading } = useAuth()
   const [, navigate] = useLocation()
   const [activeSection, setActiveSection] = useState<'organizer' | 'public'>('public')
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     if (!loading) {
@@ -38,16 +39,21 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Nav activeSection={activeSection} setActiveSection={setActiveSection} />
+      <Nav 
+        activeSection={activeSection} 
+        setActiveSection={setActiveSection}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="py-8">
         {/* Content based on active section */}
         {activeSection === 'public' ? (
           <div>
-            <PublicSection />
+            <PublicSection searchQuery={searchQuery} />
           </div>
         ) : (
-          <div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AdminSection />
           </div>
         )}

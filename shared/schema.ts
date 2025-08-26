@@ -32,6 +32,10 @@ export const tournaments = pgTable("tournaments", {
   registrationDeadline: timestamp("registration_deadline").notNull(),
   organizerId: varchar("organizer_id").notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+  // Promotion fields
+  isPromoted: boolean("is_promoted").default(false).notNull(),
+  promotionPaid: boolean("promotion_paid").default(false).notNull(),
+  promotionAmount: integer("promotion_amount").default(0),
 });
 
 export const tournamentRegistrations = pgTable("tournament_registrations", {

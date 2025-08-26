@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Plus, Trophy, Users, Calendar, Target } from "lucide-react"
+import { ArrowLeft, Plus, Trophy, Users, Calendar, Target, Star, CreditCard } from "lucide-react"
 import { apiRequest } from "@/lib/queryClient"
 
 // Enhanced schema for gaming tournaments
@@ -42,6 +42,7 @@ export default function CreateTournament() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const [selectedGameMode, setSelectedGameMode] = useState<"BR" | "CS">("BR")
+  const [promotePayment, setPromotePayment] = useState(false)
 
   const form = useForm<CreateTournamentData>({
     resolver: zodResolver(createTournamentSchema),
@@ -80,6 +81,10 @@ export default function CreateTournament() {
         positionPoints: data.gameMode === 'BR' ? data.positionPoints : "",
         csGameVariant: data.gameMode === 'CS' ? data.csGameVariant : undefined,
         device: data.gameMode === 'CS' ? data.device : undefined,
+        // Promotion fields
+        isPromoted: promotePayment,
+        promotionPaid: promotePayment, // For now, directly mark as paid when checked
+        promotionAmount: promotePayment ? 100 : 0,
       }
 
       const response = await apiRequest("POST", "/api/tournaments", tournamentData)
@@ -89,7 +94,7 @@ export default function CreateTournament() {
       queryClient.invalidateQueries({ queryKey: ["/api/tournaments"] })
       toast({
         title: "Tournament Created!",
-        description: `${tournament.name} has been successfully created.`,
+        description: `${tournament.name} has been successfully created.${promotePayment ? ' Your tournament is now promoted!' : ''}`,
       })
       navigate("/dashboard")
     },
@@ -689,6 +694,53 @@ export default function CreateTournament() {
                   </>
                 )}
 
+                {/* Promotion Section */}
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border-2 border-yellow-200">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <Star className="w-5 h-5 mr-2 text-yellow-600" />
+                    Tournament Promotion
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900 mb-2">Promote Your Tournament</h4>
+                        <p className="text-gray-600 text-sm mb-4">
+                          Feature your tournament in our main banner carousel for maximum visibility. 
+                          Your tournament will be displayed prominently on the homepage and dashboard.
+                        </p>
+                        <div className="flex items-center gap-2 text-sm text-gray-700">
+                          <CreditCard className="w-4 h-4" />
+                          <span className="font-medium">Promotion Fee: ₹100</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id="promote-tournament"
+                          checked={promotePayment}
+                          onChange={(e) => setPromotePayment(e.target.checked)}
+                          className="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                        />
+                        <label htmlFor="promote-tournament" className="text-sm font-medium text-gray-700">
+                          Promote Tournament
+                        </label>
+                      </div>
+                    </div>
+                    
+                    {promotePayment && (
+                      <div className="bg-white p-4 rounded-lg border border-yellow-300">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-gray-700">Promotion Fee</span>
+                          <span className="text-lg font-bold text-orange-600">₹100</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Payment will be processed when you create the tournament
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Submit Buttons */}
                 <div className="flex gap-4 pt-6">
                   <Link href="/dashboard" className="flex-1">
@@ -712,7 +764,7 @@ export default function CreateTournament() {
                     ) : (
                       <>
                         <Plus className="w-4 h-4 mr-2" />
-                        Create Tournament
+                        {promotePayment ? 'Create & Promote (₹100)' : 'Create Tournament'}
                       </>
                     )}
                   </Button>

@@ -38,6 +38,9 @@ const mockTournaments: Tournament[] = [
     registrationDeadline: new Date("2025-08-26T13:30:00Z"),
     organizerId: "organizer-1",
     createdAt: new Date("2025-08-25T10:00:00Z"),
+    isPromoted: true,
+    promotionPaid: true,
+    promotionAmount: 100,
   }
 ];
 const mockUsers: User[] = [];
@@ -260,6 +263,9 @@ export class MemStorage implements IStorage {
       registrationDeadline: insertTournament.registrationDeadline,
       organizerId: insertTournament.organizerId,
       createdAt: new Date(),
+      isPromoted: insertTournament.isPromoted || false,
+      promotionPaid: insertTournament.promotionPaid || false,
+      promotionAmount: insertTournament.promotionAmount || 0,
     };
     
     mockTournaments.push(tournament);
