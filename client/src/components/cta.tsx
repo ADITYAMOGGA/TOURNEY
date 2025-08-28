@@ -4,7 +4,7 @@ import { Gamepad2, Crown } from "lucide-react";
 
 export default function CTA() {
   return (
-    <section className="py-20 gradient-dark">
+    <section className="py-20 bg-dark-bg dark:bg-dark-card transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
           Ready to Start Your Tournament Journey?
@@ -21,7 +21,7 @@ export default function CTA() {
             </Button>
           </Link>
           <Link href="/create-tournament">
-            <Button variant="outline" className="border-2 border-white text-white px-10 py-4 rounded-xl text-lg font-semibold hover:bg-white hover:text-dark-bg transition-all duration-300" data-testid="button-organize-tournament-cta">
+            <Button variant="outline" className="border-2 border-white text-white px-10 py-4 rounded-xl text-lg font-semibold hover:bg-white hover:text-primary-orange transition-all duration-300" data-testid="button-organize-tournament-cta">
               <Crown className="w-5 h-5 mr-3" />
               Organize Tournament
             </Button>

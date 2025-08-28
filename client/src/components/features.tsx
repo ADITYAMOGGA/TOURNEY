@@ -35,13 +35,13 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-dark-bg transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-dark-bg mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-dark-bg dark:text-white mb-4">
             Everything You Need for Tournaments
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Professional tournament management tools and seamless player experience in one platform
           </p>
         </div>
@@ -52,14 +52,14 @@ export default function Features() {
             return (
               <div
                 key={index}
-                className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
+                className="bg-gray-50 dark:bg-dark-card rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
                 data-testid={`feature-card-${index}`}
               >
                 <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mb-6">
                   <IconComponent className="text-white text-2xl w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-semibold text-dark-bg mb-4">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">
+                <h3 className="text-xl font-semibold text-dark-bg dark:text-white mb-4">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {feature.description}
                 </p>
               </div>

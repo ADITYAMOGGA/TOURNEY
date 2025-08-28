@@ -94,7 +94,7 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
-                    className="text-gray-600 hover:text-black flex items-center gap-2 font-medium transition-colors duration-200 bg-transparent border-none"
+                    className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white flex items-center gap-2 font-medium transition-colors duration-200 bg-transparent border-none"
                     data-testid="button-user-menu"
                   >
                     <User className="w-4 h-4" />
@@ -137,14 +137,14 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
               <>
                 <Link href="/login">
                   <Button 
-                    className="text-gray-600 hover:text-black font-medium transition-colors duration-200 bg-transparent border-none"
+                    className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium transition-colors duration-200 bg-transparent border-none"
                     data-testid="button-sign-in"
                   >
                     Sign In
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button className="bg-dark-bg text-white hover:bg-gray-800 px-6 py-2 font-medium transition-all duration-200" data-testid="button-get-started">
+                  <Button className="bg-primary-orange text-white hover:bg-secondary-orange dark:bg-primary-orange dark:hover:bg-secondary-orange px-6 py-2 font-medium transition-all duration-200" data-testid="button-get-started">
                     Get Started
                   </Button>
                 </Link>
@@ -155,7 +155,7 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button className="text-gray-600 hover:text-black transition-colors duration-200 bg-transparent border-none p-2" data-testid="button-mobile-menu">
+                <Button className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200 bg-transparent border-none p-2" data-testid="button-mobile-menu">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
