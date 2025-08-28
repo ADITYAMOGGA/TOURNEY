@@ -5,13 +5,23 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Trophy, Users, Settings, Calendar, Edit } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function AdminSection() {
-  const { data: tournaments, isLoading } = useQuery<Tournament[]>({
-    queryKey: ["/api/tournaments"],
+  const { user } = useAuth()
+  
+  const { data: myTournaments, isLoading } = useQuery<Tournament[]>({
+    queryKey: ["/api/tournaments", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const response = await fetch(`/api/tournaments?organizerId=${user.id}`);
+      if (!response.ok) throw new Error('Failed to fetch tournaments');
+      return response.json();
+    },
+    enabled: !!user?.id
   })
-
-  const myTournaments = tournaments?.slice(0, 3) || [] // Mock - would filter by organizer in real app
+  
+  const displayTournaments = myTournaments?.slice(0, 3) || []
 
   return (
     <div className="space-y-8">
@@ -41,7 +51,7 @@ export default function AdminSection() {
             <Trophy className="h-4 w-4 text-primary-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{tournaments?.length || 0}</div>
+            <div className="text-2xl font-bold">{myTournaments?.length || 0}</div>
             <p className="text-xs text-muted-foreground">Active tournaments</p>
           </CardContent>
         </Card>
@@ -52,7 +62,7 @@ export default function AdminSection() {
             <Users className="h-4 w-4 text-primary-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{tournaments?.reduce((sum, t) => sum + t.registeredPlayers, 0) || 0}</div>
+            <div className="text-2xl font-bold">{myTournaments?.reduce((sum, t) => sum + t.registeredPlayers, 0) || 0}</div>
             <p className="text-xs text-muted-foreground">Across all tournaments</p>
           </CardContent>
         </Card>
@@ -63,7 +73,7 @@ export default function AdminSection() {
             <Trophy className="h-4 w-4 text-primary-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{tournaments?.reduce((sum, t) => sum + t.prizePool, 0).toLocaleString() || 0}</div>
+            <div className="text-2xl font-bold">₹{myTournaments?.reduce((sum, t) => sum + t.prizePool, 0).toLocaleString() || 0}</div>
             <p className="text-xs text-muted-foreground">Total distributed</p>
           </CardContent>
         </Card>
@@ -105,7 +115,7 @@ export default function AdminSection() {
                 </CardContent>
               </Card>
             ))
-          ) : myTournaments.length === 0 ? (
+          ) : displayTournaments.length === 0 ? (
             <div className="col-span-full text-center py-16">
               <div className="max-w-md mx-auto">
                 <Link href="/create-tournament">
@@ -126,7 +136,7 @@ export default function AdminSection() {
               </div>
             </div>
           ) : (
-            myTournaments.map((tournament) => (
+            displayTournaments.map((tournament) => (
               <Card key={tournament.id} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary-orange">
                 <div className="aspect-video bg-gradient-to-r from-primary-orange to-secondary-orange rounded-t-lg relative overflow-hidden">
                   <img 

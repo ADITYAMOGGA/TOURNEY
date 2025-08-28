@@ -8,10 +8,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Tournament routes
   app.get("/api/tournaments", async (req, res) => {
     try {
-      const { status } = req.query;
+      const { status, organizerId } = req.query;
       let tournaments;
       
-      if (status && typeof status === 'string') {
+      if (organizerId && typeof organizerId === 'string') {
+        tournaments = await storage.getTournamentsByOrganizer(organizerId);
+      } else if (status && typeof status === 'string') {
         tournaments = await storage.getTournamentsByStatus(status);
       } else {
         tournaments = await storage.getAllTournaments();

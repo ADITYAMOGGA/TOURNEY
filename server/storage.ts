@@ -27,6 +27,7 @@ export interface IStorage {
   getTournament(id: string): Promise<Tournament | undefined>;
   getAllTournaments(): Promise<Tournament[]>;
   getTournamentsByStatus(status: string): Promise<Tournament[]>;
+  getTournamentsByOrganizer(organizerId: string): Promise<Tournament[]>;
   createTournament(tournament: InsertTournament): Promise<Tournament>;
   updateTournament(id: string, updates: Partial<Tournament>): Promise<Tournament | undefined>;
   
@@ -93,7 +94,68 @@ export class DbStorage implements IStorage {
 
   async getTournamentsByStatus(status: string): Promise<Tournament[]> {
     const { data } = await supabase.from('tournaments').select('*').eq('status', status).order('created_at', { ascending: false });
-    return (data as Tournament[]) || [];
+    if (!data) return [];
+    
+    // Transform snake_case to camelCase
+    return data.map(item => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      gameMode: item.game_mode,
+      type: item.type,
+      format: item.format,
+      prizePool: item.prize_pool,
+      slotPrice: item.slot_price,
+      slots: item.slots,
+      registeredPlayers: item.registered_players,
+      matchCount: item.match_count,
+      killPoints: item.kill_points,
+      positionPoints: item.position_points,
+      csGameVariant: item.cs_game_variant,
+      device: item.device,
+      rules: item.rules,
+      status: item.status,
+      startTime: item.start_time,
+      registrationDeadline: item.registration_deadline,
+      organizerId: item.organizer_id,
+      createdAt: item.created_at,
+      isPromoted: item.is_promoted || false,
+      promotionPaid: item.promotion_paid || false,
+      promotionAmount: item.promotion_amount || 0,
+    })) as Tournament[];
+  }
+
+  async getTournamentsByOrganizer(organizerId: string): Promise<Tournament[]> {
+    const { data } = await supabase.from('tournaments').select('*').eq('organizer_id', organizerId).order('created_at', { ascending: false });
+    if (!data) return [];
+    
+    // Transform snake_case to camelCase
+    return data.map(item => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      gameMode: item.game_mode,
+      type: item.type,
+      format: item.format,
+      prizePool: item.prize_pool,
+      slotPrice: item.slot_price,
+      slots: item.slots,
+      registeredPlayers: item.registered_players,
+      matchCount: item.match_count,
+      killPoints: item.kill_points,
+      positionPoints: item.position_points,
+      csGameVariant: item.cs_game_variant,
+      device: item.device,
+      rules: item.rules,
+      status: item.status,
+      startTime: item.start_time,
+      registrationDeadline: item.registration_deadline,
+      organizerId: item.organizer_id,
+      createdAt: item.created_at,
+      isPromoted: item.is_promoted || false,
+      promotionPaid: item.promotion_paid || false,
+      promotionAmount: item.promotion_amount || 0,
+    })) as Tournament[];
   }
 
   async createTournament(insertTournament: InsertTournament): Promise<Tournament> {
@@ -223,6 +285,12 @@ export class MemStorage implements IStorage {
 
   async getTournamentsByStatus(status: string): Promise<Tournament[]> {
     return mockTournaments.filter(t => t.status === status);
+  }
+
+  async getTournamentsByOrganizer(organizerId: string): Promise<Tournament[]> {
+    return mockTournaments.filter(t => t.organizerId === organizerId).sort((a, b) => 
+      new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime()
+    );
   }
 
   async createTournament(insertTournament: InsertTournament): Promise<Tournament> {
