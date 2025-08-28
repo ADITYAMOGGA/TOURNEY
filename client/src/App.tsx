@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import AnimatedPage from "@/components/animated-page";
@@ -39,8 +40,11 @@ function AuthenticatedRouter() {
   // Show loading spinner while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
+      <div className="min-h-screen bg-background dark:bg-dark-bg flex items-center justify-center">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-32 w-32 border-4 border-primary-orange/20"></div>
+          <div className="absolute top-0 left-0 animate-spin rounded-full h-32 w-32 border-4 border-transparent border-t-primary-orange"></div>
+        </div>
       </div>
     );
   }
@@ -97,10 +101,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

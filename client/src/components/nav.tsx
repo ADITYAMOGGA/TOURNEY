@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Menu, User, LogOut, Trophy, Users, LayoutDashboard, Settings, Search } from "lucide-react";
 import garenaLogo from "@assets/garena_1756025529823.png";
 import tourneyLogo from "@assets/image_1756054912806.png";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface NavProps {
   activeSection?: 'organizer' | 'public'
@@ -22,14 +23,14 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
   const { user, signOut } = useAuth();
 
   return (
-    <nav className="bg-white border-b-2 border-dark-bg sticky top-0 z-50 backdrop-blur-sm">
+    <nav className="bg-white dark:bg-dark-bg border-b-2 border-dark-bg dark:border-gray-600 sticky top-0 z-50 backdrop-blur-sm transition-colors">
       <div className="max-w-full mx-auto px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center gap-2">
                 <img src={garenaLogo} alt="Garena" className="h-8 w-auto" />
-                <span className="text-sm font-normal text-dark-bg">X</span>
+                <span className="text-sm font-normal text-dark-bg dark:text-white">X</span>
                 <img src={tourneyLogo} alt="Tourney" className="h-10 w-auto" />
               </div>
             </Link>
@@ -43,8 +44,8 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
                   onClick={() => setActiveSection?.('public')}
                   className={`px-6 py-3 text-sm font-medium border-r border-border ${
                     activeSection === 'public'
-                      ? 'bg-dark-bg text-white'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-dark-bg text-white dark:bg-white dark:text-dark-bg'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                   }`}
                   data-testid="button-public-section"
                 >
@@ -57,8 +58,8 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
                     onClick={() => setActiveSection?.('organizer')}
                     className={`px-6 py-3 text-sm font-medium ${
                       activeSection === 'organizer'
-                        ? 'bg-dark-bg text-white'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-dark-bg text-white dark:bg-white dark:text-dark-bg'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                     }`}
                     data-testid="button-organizer-section"
                   >
@@ -88,6 +89,7 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
           )}
           
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -3,8 +3,10 @@ import { Tournament } from "@shared/schema"
 import { Link } from "wouter"
 import TournamentCard from "./tournament-card"
 import PromotedBanner from "./promoted-banner"
+import { TournamentCardSkeleton } from "./tournament-card-skeleton"
+import { NoSearchResults, NoFilterResults, NoTournaments } from "./empty-states"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
+import { AdvancedSearch } from "./advanced-search"
 import { Filter } from "lucide-react"
 import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -175,34 +177,26 @@ export default function PublicSection({ searchQuery = '' }: PublicSectionProps) 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-64 w-full" />
+              <TournamentCardSkeleton key={i} />
             ))}
           </div>
         ) : filteredTournaments.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-              <Filter className="w-12 h-12 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No tournaments found</h3>
-            <p className="text-gray-600 mb-6">
-              {searchQuery 
-                ? `No tournaments match your search "${searchQuery}"`
-                : "Try adjusting your filters to find tournaments"
-              }
-            </p>
-            {(statusFilter !== 'all' || gameModeFilter !== 'all') && (
-              <Button
-                onClick={() => {
+          <>
+            {!tournaments?.length ? (
+              <NoTournaments />
+            ) : searchQuery ? (
+              <NoSearchResults searchQuery={searchQuery} />
+            ) : (statusFilter !== 'all' || gameModeFilter !== 'all') ? (
+              <NoFilterResults 
+                onClearFilters={() => {
                   setStatusFilter('all')
                   setGameModeFilter('all')
-                }}
-                variant="outline"
-                className="font-mono"
-              >
-                CLEAR FILTERS
-              </Button>
+                }} 
+              />
+            ) : (
+              <NoTournaments />
             )}
-          </div>
+          </>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTournaments.map((tournament) => (
