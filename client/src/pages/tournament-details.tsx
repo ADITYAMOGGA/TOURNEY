@@ -22,12 +22,12 @@ export default function TournamentDetails() {
   const queryClient = useQueryClient();
   const [registrationOpen, setRegistrationOpen] = useState(false);
 
-  const { data: tournament, isLoading: tournamentLoading } = useQuery<Tournament>({
+  const { data: tournament, isLoading: tournamentLoading, error: tournamentError } = useQuery<Tournament>({
     queryKey: ["/api/tournaments", params?.id],
     enabled: !!params?.id,
   });
 
-  const { data: registrations, isLoading: registrationsLoading } = useQuery<TournamentRegistration[]>({
+  const { data: registrations, isLoading: registrationsLoading, error: registrationsError } = useQuery<TournamentRegistration[]>({
     queryKey: ["/api/tournaments", params?.id, "registrations"],
     enabled: !!params?.id,
   });
@@ -75,6 +75,25 @@ export default function TournamentDetails() {
     );
   }
 
+  if (tournamentError) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Nav />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600">Error Loading Tournament</h1>
+            <p className="text-gray-600 mt-2">
+              {tournamentError instanceof Error ? tournamentError.message : "Failed to load tournament details"}
+            </p>
+            <Button onClick={() => window.location.reload()} className="mt-4">
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!tournament) {
     return (
       <div className="min-h-screen bg-background">
@@ -105,7 +124,7 @@ export default function TournamentDetails() {
     );
   };
 
-  const timeUntilStart = tournament.startTime ? new Date(tournament.startTime).getTime() - Date.now() : 0;
+  const timeUntilStart = tournament?.startTime ? new Date(tournament.startTime).getTime() - Date.now() : 0;
   const hoursUntilStart = Math.max(0, Math.floor(timeUntilStart / (1000 * 60 * 60)));
   const minutesUntilStart = Math.max(0, Math.floor((timeUntilStart % (1000 * 60 * 60)) / (1000 * 60)));
 
