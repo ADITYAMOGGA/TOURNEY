@@ -146,7 +146,7 @@ export default function TournamentDetails() {
             </div>
             <div className="text-right">
               <div className="text-3xl font-bold text-primary-orange" data-testid="text-prize-pool">
-                ₹{tournament.prizePool.toLocaleString()}
+                ₹{tournament.prizePool?.toLocaleString() || '0'}
               </div>
               <div className="text-sm text-gray-500">Prize Pool</div>
             </div>
@@ -177,7 +177,7 @@ export default function TournamentDetails() {
                     <div>
                       <div className="font-medium">Players</div>
                       <div className="text-sm text-gray-600" data-testid="text-player-count">
-                        {tournament.registeredPlayers} / {tournament.slots}
+                        {tournament.registeredPlayers || 0} / {tournament.slots || 0}
                       </div>
                     </div>
                   </div>
@@ -187,7 +187,7 @@ export default function TournamentDetails() {
                     <div>
                       <div className="font-medium">Entry Fee</div>
                       <div className="text-sm text-gray-600" data-testid="text-entry-fee">
-                        ₹{tournament.slotPrice}
+                        ₹{tournament.slotPrice || 0}
                       </div>
                     </div>
                   </div>
