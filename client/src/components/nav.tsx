@@ -114,6 +114,14 @@ export default function Nav({ activeSection = 'public', setActiveSection, search
                       Tournaments
                     </Link>
                   </DropdownMenuItem>
+                  {user.role === 'organizer' && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/organizer-dashboard" className="flex items-center" data-testid="button-organizer-dashboard">
+                        <Users className="w-4 h-4 mr-2" />
+                        Registration Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/settings" className="flex items-center" data-testid="button-settings">
                       <Settings className="w-4 h-4 mr-2" />

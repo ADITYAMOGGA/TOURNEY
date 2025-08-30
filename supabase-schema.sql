@@ -36,13 +36,18 @@ CREATE TABLE IF NOT EXISTS tournaments (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Tournament registrations table
+-- Enhanced tournament registrations table
 CREATE TABLE IF NOT EXISTS tournament_registrations (
     id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
     tournament_id VARCHAR NOT NULL REFERENCES tournaments(id) ON DELETE CASCADE,
     user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    team_name TEXT, -- For duo/squad tournaments
+    team_name TEXT NOT NULL, -- Team name (required)
+    igl_real_name TEXT NOT NULL, -- IGL (In-Game Leader) real name
+    igl_ingame_id TEXT NOT NULL, -- IGL in-game ID
     player_names TEXT[], -- Array of player names for teams
+    registration_fee INTEGER NOT NULL, -- Registration fee amount
+    payment_status TEXT NOT NULL DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed')),
+    payment_method TEXT, -- Payment method used (fake_payment, upi, card, etc.)
     registered_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(tournament_id, user_id) -- Prevent duplicate registrations
 );

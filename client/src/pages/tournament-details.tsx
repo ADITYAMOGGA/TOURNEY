@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { Tournament, TournamentRegistration } from "@shared/schema";
@@ -5,11 +6,13 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
+import TournamentRegistrationForm from "@/components/tournament-registration-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Trophy, Users, DollarSign, Clock, Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 
@@ -17,6 +20,7 @@ export default function TournamentDetails() {
   const [match, params] = useRoute("/tournament/:id");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [registrationOpen, setRegistrationOpen] = useState(false);
 
   const { data: tournament, isLoading: tournamentLoading } = useQuery<Tournament>({
     queryKey: ["/api/tournaments", params?.id],
@@ -28,31 +32,11 @@ export default function TournamentDetails() {
     enabled: !!params?.id,
   });
 
-  const joinTournamentMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", `/api/tournaments/${params?.id}/register`, {
-        userId: "mock-user-1", // Mock user ID
-        teamName: "Team Alpha",
-        playerNames: ["Player1", "Player2", "Player3", "Player4"], // Mock team
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tournaments", params?.id] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tournaments", params?.id, "registrations"] });
-      toast({
-        title: "Registration Successful!",
-        description: "You have successfully joined the tournament.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "Failed to register for tournament.",
-        variant: "destructive",
-      });
-    },
-  });
+  const handleRegistrationSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["/api/tournaments", params?.id] });
+    queryClient.invalidateQueries({ queryKey: ["/api/tournaments", params?.id, "registrations"] });
+    setRegistrationOpen(false);
+  };
 
   if (!match || !params?.id) {
     return <div>Tournament not found</div>;
@@ -220,16 +204,25 @@ export default function TournamentDetails() {
                 <CardContent>
                   <div className="space-y-4">
                     {registrations.map((registration, index) => (
-                      <div key={registration.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div>
-                          <div className="font-medium" data-testid={`text-team-name-${index}`}>
+                      <div key={registration.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                        <div className="flex-1">
+                          <div className="font-medium text-lg" data-testid={`text-team-name-${index}`}>
                             {registration.teamName || `Team ${index + 1}`}
                           </div>
-                          <div className="text-sm text-gray-600">
-                            Registered {format(new Date(registration.registeredAt), "PPp")}
+                          <div className="text-sm text-gray-600 mt-1">
+                            <div>IGL: {registration.iglRealName} ({registration.iglIngameId})</div>
+                            <div>Registered {format(new Date(registration.registeredAt), "PPp")}</div>
                           </div>
+                          {registration.paymentStatus && (
+                            <Badge 
+                              variant={registration.paymentStatus === 'completed' ? 'default' : 'secondary'} 
+                              className={`mt-2 ${registration.paymentStatus === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                            >
+                              Payment {registration.paymentStatus}
+                            </Badge>
+                          )}
                         </div>
-                        <Badge variant="outline">#{index + 1}</Badge>
+                        <Badge variant="outline" className="text-lg px-3 py-1">#{index + 1}</Badge>
                       </div>
                     ))}
                   </div>
@@ -270,17 +263,23 @@ export default function TournamentDetails() {
                       </div>
                     </div>
 
-                    <Button
-                      className="w-full gradient-primary text-white hover:shadow-lg"
-                      onClick={() => joinTournamentMutation.mutate()}
-                      disabled={
-                        joinTournamentMutation.isPending ||
-                        tournament.registeredPlayers >= tournament.slots
-                      }
-                      data-testid="button-join-tournament"
-                    >
-                      {joinTournamentMutation.isPending ? "Joining..." : "Join Tournament"}
-                    </Button>
+                    <Dialog open={registrationOpen} onOpenChange={setRegistrationOpen}>
+                      <DialogTrigger asChild>
+                        <Button
+                          className="w-full gradient-primary text-white hover:shadow-lg"
+                          disabled={tournament.registeredPlayers >= tournament.slots}
+                          data-testid="button-join-tournament"
+                        >
+                          Join Tournament
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-lg bg-transparent border-none shadow-none">
+                        <TournamentRegistrationForm 
+                          tournament={tournament} 
+                          onSuccess={handleRegistrationSuccess}
+                        />
+                      </DialogContent>
+                    </Dialog>
 
                     {tournament.registeredPlayers >= tournament.slots && (
                       <div className="text-center text-sm text-red-600 font-medium">

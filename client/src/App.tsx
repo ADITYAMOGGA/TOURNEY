@@ -16,6 +16,7 @@ import TournamentDetails from "@/pages/tournament-details";
 import Login from "@/pages/login";
 import RoleSelection from "@/pages/role-selection";
 import Dashboard from "@/pages/dashboard";
+import OrganizerDashboard from "@/pages/organizer-dashboard";
 import Settings from "@/pages/settings";
 import Statistics from "@/pages/statistics";
 import Profile from "@/pages/profile";
@@ -31,7 +32,7 @@ function AuthenticatedRouter() {
         setLocation("/dashboard");
       }
       // If user is not logged in and trying to access protected routes, redirect to login
-      if (!user && ["/dashboard", "/create-tournament", "/settings", "/statistics", "/profile"].includes(location)) {
+      if (!user && ["/dashboard", "/create-tournament", "/organizer-dashboard", "/settings", "/statistics", "/profile"].includes(location)) {
         setLocation("/login");
       }
     }
@@ -72,6 +73,9 @@ function AuthenticatedRouter() {
         </Route>
         <Route path="/dashboard">
           <AnimatedPage key="dashboard"><Dashboard /></AnimatedPage>
+        </Route>
+        <Route path="/organizer-dashboard">
+          <AnimatedPage key="organizer-dashboard"><OrganizerDashboard /></AnimatedPage>
         </Route>
         <Route path="/settings">
           <AnimatedPage key="settings"><Settings /></AnimatedPage>

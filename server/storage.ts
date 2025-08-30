@@ -230,11 +230,39 @@ export class DbStorage implements IStorage {
 
   async getTournamentRegistrations(tournamentId: string): Promise<TournamentRegistration[]> {
     const { data } = await supabase.from('tournament_registrations').select('*').eq('tournament_id', tournamentId);
-    return (data as TournamentRegistration[]) || [];
+    if (!data) return [];
+    
+    // Transform snake_case to camelCase
+    return data.map(item => ({
+      id: item.id,
+      tournamentId: item.tournament_id,
+      userId: item.user_id,
+      teamName: item.team_name,
+      iglRealName: item.igl_real_name,
+      iglIngameId: item.igl_ingame_id,
+      playerNames: item.player_names,
+      registrationFee: item.registration_fee,
+      paymentStatus: item.payment_status,
+      paymentMethod: item.payment_method,
+      registeredAt: item.registered_at,
+    })) as TournamentRegistration[];
   }
 
   async createTournamentRegistration(insertRegistration: InsertTournamentRegistration): Promise<TournamentRegistration> {
-    const { data, error } = await supabase.from('tournament_registrations').insert(insertRegistration).select().single();
+    // Transform camelCase to snake_case for Supabase
+    const transformedData = {
+      tournament_id: insertRegistration.tournamentId,
+      user_id: insertRegistration.userId,
+      team_name: insertRegistration.teamName,
+      igl_real_name: insertRegistration.iglRealName,
+      igl_ingame_id: insertRegistration.iglIngameId,
+      player_names: insertRegistration.playerNames,
+      registration_fee: insertRegistration.registrationFee,
+      payment_status: insertRegistration.paymentStatus || 'pending',
+      payment_method: insertRegistration.paymentMethod,
+    };
+    
+    const { data, error } = await supabase.from('tournament_registrations').insert(transformedData).select().single();
     if (error) throw error;
     
     // Update tournament registered players count
@@ -245,12 +273,40 @@ export class DbStorage implements IStorage {
         .eq('id', insertRegistration.tournamentId);
     }
     
-    return data as TournamentRegistration;
+    // Transform back to camelCase for response
+    return {
+      id: data.id,
+      tournamentId: data.tournament_id,
+      userId: data.user_id,
+      teamName: data.team_name,
+      iglRealName: data.igl_real_name,
+      iglIngameId: data.igl_ingame_id,
+      playerNames: data.player_names,
+      registrationFee: data.registration_fee,
+      paymentStatus: data.payment_status,
+      paymentMethod: data.payment_method,
+      registeredAt: data.registered_at,
+    } as TournamentRegistration;
   }
 
   async getUserTournamentRegistrations(userId: string): Promise<TournamentRegistration[]> {
     const { data } = await supabase.from('tournament_registrations').select('*').eq('user_id', userId);
-    return (data as TournamentRegistration[]) || [];
+    if (!data) return [];
+    
+    // Transform snake_case to camelCase
+    return data.map(item => ({
+      id: item.id,
+      tournamentId: item.tournament_id,
+      userId: item.user_id,
+      teamName: item.team_name,
+      iglRealName: item.igl_real_name,
+      iglIngameId: item.igl_ingame_id,
+      playerNames: item.player_names,
+      registrationFee: item.registration_fee,
+      paymentStatus: item.payment_status,
+      paymentMethod: item.payment_method,
+      registeredAt: item.registered_at,
+    })) as TournamentRegistration[];
   }
 }
 
@@ -342,8 +398,13 @@ export class MemStorage implements IStorage {
       id: Date.now().toString(),
       tournamentId: insertRegistration.tournamentId,
       userId: insertRegistration.userId,
-      teamName: insertRegistration.teamName || null,
+      teamName: insertRegistration.teamName,
+      iglRealName: insertRegistration.iglRealName,
+      iglIngameId: insertRegistration.iglIngameId,
       playerNames: insertRegistration.playerNames || null,
+      registrationFee: insertRegistration.registrationFee,
+      paymentStatus: insertRegistration.paymentStatus || 'pending',
+      paymentMethod: insertRegistration.paymentMethod || null,
       registeredAt: new Date(),
     };
     

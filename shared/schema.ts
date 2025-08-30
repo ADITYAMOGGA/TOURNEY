@@ -42,8 +42,13 @@ export const tournamentRegistrations = pgTable("tournament_registrations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tournamentId: varchar("tournament_id").notNull(),
   userId: varchar("user_id").notNull(),
-  teamName: text("team_name"),
+  teamName: text("team_name").notNull(),
+  iglRealName: text("igl_real_name").notNull(),
+  iglIngameId: text("igl_ingame_id").notNull(),
   playerNames: text("player_names").array(),
+  registrationFee: integer("registration_fee").notNull(),
+  paymentStatus: text("payment_status").notNull().default("pending"), // "pending", "completed", "failed"
+  paymentMethod: text("payment_method"), // "fake_payment", "upi", "card", etc.
   registeredAt: timestamp("registered_at").default(sql`now()`).notNull(),
 });
 

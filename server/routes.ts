@@ -97,18 +97,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Tournament registration is closed" });
       }
       
+      // Enhanced validation with new required fields
       const validatedData = insertTournamentRegistrationSchema.parse({
-        ...req.body,
-        tournamentId
+        tournamentId,
+        userId: req.body.userId,
+        teamName: req.body.teamName,
+        iglRealName: req.body.iglRealName,
+        iglIngameId: req.body.iglIngameId,
+        playerNames: req.body.playerNames || null,
+        registrationFee: tournament.slotPrice, // Use tournament slot price as registration fee
+        paymentStatus: 'pending',
+        paymentMethod: req.body.paymentMethod || 'fake_payment'
       });
       
       const registration = await storage.createTournamentRegistration(validatedData);
       res.status(201).json(registration);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error('Registration validation errors:', error.errors);
         return res.status(400).json({ message: "Invalid registration data", errors: error.errors });
       }
+      console.error('Registration error:', error);
       res.status(500).json({ message: "Failed to register for tournament" });
+    }
+  });
+
+  // Fake payment processing endpoint
+  app.post("/api/registrations/:id/payment", async (req, res) => {
+    try {
+      const registrationId = req.params.id;
+      const { paymentMethod } = req.body;
+      
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Fake payment success (90% success rate for demo)
+      const paymentSuccess = Math.random() > 0.1;
+      
+      const paymentStatus = paymentSuccess ? 'completed' : 'failed';
+      
+      // In a real implementation, you would update the registration payment status
+      // For now, we'll just return the payment result
+      res.json({
+        success: paymentSuccess,
+        status: paymentStatus,
+        paymentMethod,
+        transactionId: `fake_txn_${Date.now()}`,
+        message: paymentSuccess ? 'Payment completed successfully!' : 'Payment failed. Please try again.'
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Payment processing failed" });
+    }
+  });
+
+  // Organizer dashboard endpoint to get all registrations for their tournaments
+  app.get("/api/organizer/:organizerId/registrations", async (req, res) => {
+    try {
+      const organizerId = req.params.organizerId;
+      
+      // Get all tournaments by this organizer
+      const tournaments = await storage.getTournamentsByOrganizer(organizerId);
+      
+      // Get registrations for all their tournaments
+      const allRegistrations = [];
+      for (const tournament of tournaments) {
+        const registrations = await storage.getTournamentRegistrations(tournament.id);
+        // Add tournament info to each registration
+        const enrichedRegistrations = registrations.map(reg => ({
+          ...reg,
+          tournament: {
+            id: tournament.id,
+            name: tournament.name,
+            gameMode: tournament.gameMode,
+            type: tournament.type,
+            prizePool: tournament.prizePool
+          }
+        }));
+        allRegistrations.push(...enrichedRegistrations);
+      }
+      
+      res.json(allRegistrations);
+    } catch (error) {
+      console.error('Organizer registrations error:', error);
+      res.status(500).json({ message: "Failed to fetch organizer registrations" });
     }
   });
 
