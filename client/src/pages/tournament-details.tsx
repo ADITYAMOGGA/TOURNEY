@@ -210,7 +210,11 @@ export default function TournamentDetails() {
                             {registration.teamName || `Team ${index + 1}`}
                           </div>
                           <div className="text-sm text-gray-600 mt-1">
-                            <div>IGL: {registration.iglRealName} ({registration.iglIngameId})</div>
+                            {registration.iglRealName && registration.iglIngameId ? (
+                              <div>IGL: {registration.iglRealName} ({registration.iglIngameId})</div>
+                            ) : (
+                              <div>Team registration</div>
+                            )}
                             <div>Registered {format(new Date(registration.registeredAt), "PPp")}</div>
                           </div>
                           {registration.paymentStatus && (
